@@ -3,6 +3,7 @@ package com.cs386p.investment_buddy
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.cs386p.investment_buddy.databinding.ActivityMainBinding
@@ -29,7 +30,5 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, stockSearchClass::class.java)
             this.startActivity(intent)
         }
-
-        viewModel.symbolSearch() //TODO: Delete me - just for testing
     }
 }

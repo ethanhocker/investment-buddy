@@ -1,5 +1,6 @@
 package com.cs386p.investment_buddy
 
+import androidx.lifecycle.MutableLiveData
 import com.cs386p.investment_buddy.api.AlphaVantageAPI
 import com.cs386p.investment_buddy.api.Repository
 import com.cs386p.investment_buddy.api.SearchedStock
@@ -11,11 +12,15 @@ import kotlinx.coroutines.launch
 class MainViewModel : ViewModel() {
     private val alphaVantagAPI = AlphaVantageAPI.create()
     private val stockRepository = Repository(alphaVantagAPI)
-    private val searchResults = mutableListOf<SearchedStock>()
+    private val searchResults = MutableLiveData<MutableList<SearchedStock>?>()
 
-    fun symbolSearch() = viewModelScope.launch {
+    fun symbolSearch(symbol: String) = viewModelScope.launch {
         // TODO: rewrite this. Just testing the API here
-        val test = stockRepository.symbolSearch("AAPL")
-        println("test: " + test)
+        val results = stockRepository.symbolSearch(symbol)
+        searchResults.postValue(results.toMutableList())
+    }
+
+    fun observeSearchResults(): MutableLiveData<MutableList<SearchedStock>?> {
+        return searchResults
     }
 }
