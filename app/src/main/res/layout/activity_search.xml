@@ -4,18 +4,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <EditText
-        android:id="@+id/actionSearch"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:minEms="24"
-        android:hint="search"
-        android:imeOptions="actionSearch"
-        android:inputType="text"
-        android:padding="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-    />
+    <include
+        android:id="@+id/contentSearch"
+        layout="@layout/content_search" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

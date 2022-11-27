@@ -3,6 +3,7 @@ package com.cs386p.investment_buddy
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import android.widget.TextView
@@ -60,7 +61,7 @@ class MainActivity : AppCompatActivity() {
             this.startActivity(intent)
         }
 
-        viewModel.symbolSearch() //TODO: Delete me - just for testing
+        //viewModel.symbolSearch() //TODO: Delete me - just for testing
 
         AuthInit(viewModel, signInLauncher)
         viewModel.fetchHoldingsData()
