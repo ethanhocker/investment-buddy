@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/description"
-        />
+    />
 
     <TextView
         android:id="@+id/description"
@@ -28,7 +28,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/analyze"
-        />
+    />
 
     <View
         android:layout_width="match_parent"
@@ -38,7 +38,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/analyze"
-        />
+    />
 
     <TextView
         android:id="@+id/analyze"
@@ -52,7 +52,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/analyzeInfo"
         app:layout_constraintBottom_toTopOf="@id/fakefolios"
-        />
+    />
     <ImageView
         android:id="@+id/analyzeInfo"
         android:layout_width="wrap_content"
@@ -63,7 +63,7 @@
         app:layout_constraintStart_toEndOf="@+id/analyze"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/fakefolios"
-        />
+    />
 
     <View
         android:layout_width="match_parent"
@@ -73,7 +73,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/fakefolios"
-        />
+    />
 
     <TextView
         android:id="@+id/fakefolios"
@@ -87,7 +87,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/fakefoliosInfo"
         app:layout_constraintBottom_toTopOf="@+id/favorites"
-        />
+    />
     <ImageView
         android:id="@+id/fakefoliosInfo"
         android:layout_width="wrap_content"
@@ -98,7 +98,7 @@
         app:layout_constraintStart_toEndOf="@+id/fakefolios"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/favorites"
-        />
+    />
 
     <View
         android:layout_width="match_parent"
@@ -108,7 +108,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/favorites"
-        />
+    />
 
     <TextView
         android:id="@+id/favorites"
@@ -122,7 +122,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/favoritesRecyclerView"
-        />
+    />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/favoritesRecyclerView"
         android:layout_width="0dp"
@@ -132,6 +132,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        />
+    />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
