@@ -7,7 +7,8 @@ import com.google.firebase.firestore.Query
 
 import com.cs386p.investment_buddy.collections.HoldingsData
 import com.cs386p.investment_buddy.collections.TransactionsData
-import com.cs386p.investment_buddy.collections.UsersData
+import com.cs386p.investment_buddy.collections.FoliosData
+import com.cs386p.investment_buddy.collections.FavoritesData
 import com.firebase.ui.auth.data.model.User
 import com.google.firebase.firestore.Transaction
 import com.google.firebase.firestore.ktx.toObject
@@ -17,7 +18,8 @@ class ViewModelDBHelper() {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val collectionHoldings = "Holdings"
     private val collectionTransactions = "Transactions"
-    private val collectionUsers = "Users"
+    private val collectionFolios = "Folios"
+    private val collectionFavorites = "Favorites"
 
 
 
@@ -77,7 +79,7 @@ class ViewModelDBHelper() {
 
     }
 
-    fun createTransaction(action: TransactionsData){
+    fun dbCreateTransaction(action: TransactionsData){
         Log.d("XXX Creating Transaction: ","HELPER")
         action.firestoreID = db.collection(collectionTransactions).document().id
         db.collection(collectionTransactions).document(action.firestoreID).set(action)
@@ -86,23 +88,23 @@ class ViewModelDBHelper() {
     }
 
 
-    fun dbFetchUsers(){
+    fun dbFetchFolios(){
 
     }
 
-    fun updateUsersPortfolios(user: UsersData){
-        db.collection(collectionUsers).whereEqualTo("uuid",user.uuid).whereEqualTo("port_num",user.port_num).get()
+    fun dbUpdateFolios(folio: FoliosData){
+        db.collection(collectionFolios).whereEqualTo("uuid",folio.uuid).whereEqualTo("port_num",folio.port_num).get()
             .addOnSuccessListener { result ->
                 Log.d(javaClass.simpleName, "XXX User Portfolios Update fetch ${result!!.documents.size}")
                 // NB: This is done on a background thread
                 if(result!!.documents.size > 0)
                 {
-                    db.collection(collectionUsers).document(result.documents[0].id).set(user)
+                    db.collection(collectionFolios).document(result.documents[0].id).set(folio)
                 }
                 else
                 {
-                    user.firestoreID = db.collection(collectionUsers).document().id
-                    db.collection(collectionUsers).document(user.firestoreID).set(user)
+                    folio.firestoreID = db.collection(collectionFolios).document().id
+                    db.collection(collectionFolios).document(folio.firestoreID).set(folio)
                 }
 
             }
@@ -111,5 +113,30 @@ class ViewModelDBHelper() {
             }
     }
 
+
+    fun dbFetchFavorites(){
+
+    }
+
+    fun dbUpdateFavorites(fav: FavoritesData){
+        db.collection(collectionFolios).whereEqualTo("uuid",fav.uuid).whereEqualTo("stock_ticker",fav.stock_ticker).whereEqualTo("port_num",fav.port_num).get()
+            .addOnSuccessListener { result ->
+                Log.d(javaClass.simpleName, "XXX User Portfolios Update fetch ${result!!.documents.size}")
+                // NB: This is done on a background thread
+                if(result!!.documents.size > 0)
+                {
+                    db.collection(collectionFolios).document(result.documents[0].id).delete()
+                }
+                else
+                {
+                    fav.firestoreID = db.collection(collectionFolios).document().id
+                    db.collection(collectionFolios).document(fav.firestoreID).set(fav)
+                }
+
+            }
+            .addOnFailureListener {
+                Log.d(javaClass.simpleName, "XXX User Portfolios Update fetch FAILED ", it)
+            }
+    }
 
 }

@@ -12,7 +12,8 @@ import com.google.firebase.auth.FirebaseAuth
 
 import com.cs386p.investment_buddy.collections.HoldingsData
 import com.cs386p.investment_buddy.collections.TransactionsData
-import com.cs386p.investment_buddy.collections.UsersData
+import com.cs386p.investment_buddy.collections.FoliosData
+import com.cs386p.investment_buddy.collections.FavoritesData
 import com.google.firebase.Timestamp
 
 
@@ -62,13 +63,22 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.createTransaction(action)
 
-        var userPort = UsersData(
+        var folio = FoliosData(
             uuid = FirebaseAuth.getInstance().currentUser!!.uid,
             port_num = 1,
             aab = 3000.0
         )
 
-        viewModel.updateUsersPorts(userPort)
+        viewModel.updateFolios(folio)
+
+        var fav = FavoritesData(
+            uuid = FirebaseAuth.getInstance().currentUser!!.uid,
+            port_num = 1,
+            stock_ticker = "AMD"
+        )
+
+        viewModel.updateFavorites(fav)
+
 
 //        findViewById<TextView>(R.id.hello).text = viewModel.holdingsMetaList.value!![0].stock_ticker
 

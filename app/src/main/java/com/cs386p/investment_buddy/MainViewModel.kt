@@ -12,7 +12,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cs386p.investment_buddy.collections.HoldingsData
 import com.cs386p.investment_buddy.collections.TransactionsData
-import com.cs386p.investment_buddy.collections.UsersData
+import com.cs386p.investment_buddy.collections.FoliosData
+import com.cs386p.investment_buddy.collections.FavoritesData
 import kotlinx.coroutines.launch
 
 import com.google.firebase.auth.FirebaseAuth
@@ -62,11 +63,16 @@ class MainViewModel : ViewModel() {
 
     fun createTransaction(action: TransactionsData){
         Log.d("XXX Creating Transaction: ","MVM")
-        dbHelp.createTransaction(action)
+        dbHelp.dbCreateTransaction(action)
     }
 
-    fun updateUsersPorts(user: UsersData) {
+    fun updateFolios(folio: FoliosData) {
         Log.d("XXX Updating User Portfolios: ","MVM")
-        dbHelp.updateUsersPortfolios(user)
+        dbHelp.dbUpdateFolios(folio)
+    }
+
+    fun updateFavorites(fav: FavoritesData) {
+        Log.d("XXX Updating User Portfolios: ","MVM")
+        dbHelp.dbUpdateFavorites(fav)
     }
 }
