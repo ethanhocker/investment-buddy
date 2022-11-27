@@ -6,5 +6,6 @@ class FoliosData  (
     var uuid: String = "",
     var port_num: Long = 0L,
     var aab: Double = 0.0,
+    var name: String = "",
     @DocumentId var firestoreID: String = ""
 )

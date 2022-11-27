@@ -32,23 +32,11 @@ class ViewModelDBHelper() {
                 val temp = result.documents.mapNotNull {
                     it.toObject(HoldingsData::class.java)
                 }
-                Log.d("XXX", temp.javaClass.name)
-                Log.d("XXX", "temp 0 uuid: " + temp[0].uuid)
                 holdingsList.postValue(temp)
-
-//                holdingsList.postValue(result.documents.mapNotNull {
-//                    it.toObject(HoldingsMeta::class.java)
-//                })
-//                Log.d("XXX Result of Query: ", result.documents.toString())
-//                Log.d("XXX", "\n\n************** stock ticker from view model" + (holdingsList.getValue()
-//                    ?.get(0)?.stock_ticker
-//                    ?: null))
             }
             .addOnFailureListener {
                 Log.d(javaClass.simpleName, "XXX Holdings fetch FAILED ", it)
             }
-
-//        Log.d("XXX Result of Query in holdingsList: ", holdingsList.value!![0].stock_ticker)
     }
 
     fun dbUpdateHoldings(holding: HoldingsData){
@@ -88,54 +76,80 @@ class ViewModelDBHelper() {
     }
 
 
-    fun dbFetchFolios(){
-
+    fun dbFetchFolios(user: String, foliosList: MutableLiveData<List<FoliosData>>){
+        db.collection(collectionFolios).whereEqualTo("uuid",user).get()
+            .addOnSuccessListener { result ->
+                Log.d(javaClass.simpleName, "XXX Folios fetch ${result!!.documents.size}")
+                // NB: This is done on a background thread
+                val temp = result.documents.mapNotNull {
+                    it.toObject(FoliosData::class.java)
+                }
+                foliosList.postValue(temp)
+            }
+            .addOnFailureListener {
+                Log.d(javaClass.simpleName, "XXX Folios fetch FAILED ", it)
+            }
     }
 
     fun dbUpdateFolios(folio: FoliosData){
         db.collection(collectionFolios).whereEqualTo("uuid",folio.uuid).whereEqualTo("port_num",folio.port_num).get()
             .addOnSuccessListener { result ->
-                Log.d(javaClass.simpleName, "XXX User Portfolios Update fetch ${result!!.documents.size}")
+                Log.d(javaClass.simpleName, "XXX Portfolios Update fetch ${result!!.documents.size}")
                 // NB: This is done on a background thread
                 if(result!!.documents.size > 0)
                 {
                     db.collection(collectionFolios).document(result.documents[0].id).set(folio)
+                    Log.d("XXX Updating Existing Folio: ","HELPER")
                 }
                 else
                 {
                     folio.firestoreID = db.collection(collectionFolios).document().id
                     db.collection(collectionFolios).document(folio.firestoreID).set(folio)
+                    Log.d("XXX Creating New Folio: ","HELPER")
                 }
 
             }
             .addOnFailureListener {
-                Log.d(javaClass.simpleName, "XXX User Portfolios Update fetch FAILED ", it)
+                Log.d(javaClass.simpleName, "XXX Portfolios Update fetch FAILED ", it)
             }
     }
 
 
-    fun dbFetchFavorites(){
-
+    fun dbFetchFavorites(user: String, favoritesList: MutableLiveData<List<FavoritesData>>){
+        db.collection(collectionFavorites).whereEqualTo("uuid",user).get()
+            .addOnSuccessListener { result ->
+                Log.d(javaClass.simpleName, "XXX Favorites fetch ${result!!.documents.size}")
+                // NB: This is done on a background thread
+                val temp = result.documents.mapNotNull {
+                    it.toObject(FavoritesData::class.java)
+                }
+                favoritesList.postValue(temp)
+            }
+            .addOnFailureListener {
+                Log.d(javaClass.simpleName, "XXX Favorites fetch FAILED ", it)
+            }
     }
 
     fun dbUpdateFavorites(fav: FavoritesData){
-        db.collection(collectionFolios).whereEqualTo("uuid",fav.uuid).whereEqualTo("stock_ticker",fav.stock_ticker).whereEqualTo("port_num",fav.port_num).get()
+        db.collection(collectionFavorites).whereEqualTo("uuid",fav.uuid).whereEqualTo("stock_ticker",fav.stock_ticker).get()
             .addOnSuccessListener { result ->
-                Log.d(javaClass.simpleName, "XXX User Portfolios Update fetch ${result!!.documents.size}")
+                Log.d(javaClass.simpleName, "XXX Favorites Update fetch ${result!!.documents.size}")
                 // NB: This is done on a background thread
                 if(result!!.documents.size > 0)
                 {
-                    db.collection(collectionFolios).document(result.documents[0].id).delete()
+                    db.collection(collectionFavorites).document(result.documents[0].id).delete()
+                    Log.d("XXX Updating Existing Favorite: ","HELPER")
                 }
                 else
                 {
-                    fav.firestoreID = db.collection(collectionFolios).document().id
-                    db.collection(collectionFolios).document(fav.firestoreID).set(fav)
+                    fav.firestoreID = db.collection(collectionFavorites).document().id
+                    db.collection(collectionFavorites).document(fav.firestoreID).set(fav)
+                    Log.d("XXX Creating New Favorite: ","HELPER")
                 }
 
             }
             .addOnFailureListener {
-                Log.d(javaClass.simpleName, "XXX User Portfolios Update fetch FAILED ", it)
+                Log.d(javaClass.simpleName, "XXX Favorites Update fetch FAILED ", it)
             }
     }
 

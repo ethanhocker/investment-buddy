@@ -24,6 +24,8 @@ class MainViewModel : ViewModel() {
     private val searchResults = mutableListOf<SearchedStock>()
 
     var holdingsDataList = MutableLiveData<List<HoldingsData>>()
+    var favoritesDataList = MutableLiveData<List<FavoritesData>>()
+    var foliosDataList = MutableLiveData<List<FoliosData>>()
 
     private val dbHelp = ViewModelDBHelper()
 
@@ -39,20 +41,16 @@ class MainViewModel : ViewModel() {
     fun updateUser() {
         // XXX Write me. Update user data in view model
         val user = FirebaseAuth.getInstance().currentUser
-
     }
-
     fun updateDashboard() {
-
     }
+
+
 
     fun fetchHoldingsData() {
         dbHelp.dbFetchHoldings(holdingsDataList)
-
-        //Log.d("XXX Result of Query: ", holdingsMetaList.value!![0].ticker)
-//        println("\n\n********* holdings meta list size: " + (holdingsMetaList.value?.size ?: null))
-//        println("\n\n********* ticker value: " + holdingsMetaList.value?.get(0)?.stock_ticker)
     }
+
     fun observeHoldingsData(): LiveData<List<HoldingsData>> {
         return holdingsDataList
     }
@@ -61,14 +59,34 @@ class MainViewModel : ViewModel() {
         dbHelp.dbUpdateHoldings(holding)
     }
 
+
+
     fun createTransaction(action: TransactionsData){
         Log.d("XXX Creating Transaction: ","MVM")
         dbHelp.dbCreateTransaction(action)
     }
 
+
+    fun fetchFoliosData(uuid: String){
+        dbHelp.dbFetchFolios(uuid,foliosDataList)
+    }
+
+    fun observeFoliosData(): LiveData<List<FoliosData>> {
+        return foliosDataList
+    }
+
     fun updateFolios(folio: FoliosData) {
         Log.d("XXX Updating User Portfolios: ","MVM")
         dbHelp.dbUpdateFolios(folio)
+    }
+
+
+    fun fetchFavoritesData(uuid: String){
+        dbHelp.dbFetchFavorites(uuid,favoritesDataList)
+    }
+
+    fun observeFavoritesData(): LiveData<List<FavoritesData>> {
+        return favoritesDataList
     }
 
     fun updateFavorites(fav: FavoritesData) {

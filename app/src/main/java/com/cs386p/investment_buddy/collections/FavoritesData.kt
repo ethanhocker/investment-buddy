@@ -5,6 +5,6 @@ import com.google.firebase.firestore.DocumentId
 class FavoritesData (
     var uuid: String = "",
     var stock_ticker: String = "",
-    var port_num: Long = 0L,
+    var stock_name: String = "",
     @DocumentId var firestoreID: String = ""
 )
