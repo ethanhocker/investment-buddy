@@ -31,6 +31,11 @@
             android:label="Stock Search"
             android:windowSoftInputMode="adjustResize"/>
 
+        <activity
+            android:name=".ui.StockResearch"
+            android:label="Stock Research"
+            android:windowSoftInputMode="adjustResize"/>
+
     </application>
 
 </manifest>
