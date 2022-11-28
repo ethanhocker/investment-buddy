@@ -7,6 +7,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
+import com.google.gson.annotations.SerializedName
 
 interface AlphaVantageAPI {
     @GET("query?function=SYMBOL_SEARCH&apikey=RUXI1LX1OCUM137J")
@@ -15,22 +16,10 @@ interface AlphaVantageAPI {
     suspend fun getQuote(@Query("symbol") symbol: String) : QuoteResponse
 
     data class SearchedStockResponse(val bestMatches: List<SearchedStock>){}
-    data class QuoteResponse(val globalQuote: Quote){}
-
-//    class QuoteResponse(val data: QuoteData)
-
-//    class QuoteData(
-//        val symbol: String,
-//        val open: String,
-//        val high: String,
-//        val low: String,
-//        val price: String,
-//        val volume: String,
-//        val latestTradingDay: String,
-//        val previousClose: String,
-//        val change: String,
-//        val changePercent: String
-//    )
+    data class QuoteResponse(
+        @SerializedName("Global Quote")
+        val globalQuote: Quote
+    ){}
 
     companion object {
         // Leave this as a simple, base URL.  That way, we can have many different
