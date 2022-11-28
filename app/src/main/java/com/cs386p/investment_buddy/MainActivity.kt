@@ -2,6 +2,7 @@ package com.cs386p.investment_buddy
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.google.firebase.auth.FirebaseAuth
 
-
+//TODO Remove unused imports after moving unused functions
 import com.cs386p.investment_buddy.collections.HoldingsData
 import com.cs386p.investment_buddy.collections.TransactionsData
 import com.cs386p.investment_buddy.collections.FoliosData
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     val api_key = "RUXI1LX1OCUM137J" // TODO: Move this, just noting this here for now
     private val viewModel: MainViewModel by viewModels()
     private lateinit var binding : ContentMainBinding
+    private lateinit var UID: String
 
     private val signInLauncher =
         registerForActivityResult(FirebaseAuthUIActivityResultContract()) {
@@ -48,6 +50,9 @@ class MainActivity : AppCompatActivity() {
         // Set default mode for app to dark mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
 
+        UID = viewModel.observeUUID().value.toString()
+        println("\n\n****************** MainActivity UID: " + UID)
+
         // Start StockSearch activity when analyze text view is clicked
         binding.analyze.setOnClickListener {
             val stockSearchClass = StockSearch()
@@ -61,10 +66,25 @@ class MainActivity : AppCompatActivity() {
             this.startActivity(intent)
         }
 
+        binding.signOutBTN.setOnClickListener(){
+            viewModel.signOut()
+            AuthInit(viewModel, signInLauncher)
+        }
+
         //viewModel.symbolSearch() //TODO: Delete me - just for testing
 
         AuthInit(viewModel, signInLauncher)
-        viewModel.fetchHoldingsData()
+
+        viewModel.fetchFavoritesData(UID)
+
+        viewModel.observeFavoritesData().observe(this){
+
+            binding.favoritesRecyclerView.layoutManager = LinearLayoutManager(this)
+            binding.favoritesRecyclerView.adapter =  FavoritesAdapter(it)
+        }
+
+        //TODO: Delete the rest of these functions and inputs once they are placed elsewhere
+        /*viewModel.fetchHoldingsData(UID)
 
         viewModel.observeHoldingsData().observe(this){
             println("\n\n****************** STOCK TICKER: " + it[0].stock_ticker)
@@ -89,7 +109,7 @@ class MainActivity : AppCompatActivity() {
             port_num = 2
         )
 
-        //viewModel.createTransaction(action)
+        viewModel.createTransaction(action)
 
         var folio = FoliosData(
             uuid = FirebaseAuth.getInstance().currentUser!!.uid,
@@ -106,32 +126,11 @@ class MainActivity : AppCompatActivity() {
             stock_name = "Advanced Micro Devices"
         )
 
-        viewModel.updateFavorites(fav)
+        viewModel.updateFavorites(fav)*/
 
-        /*val adapter = FavoritesAdapter(listOf<FavoritesData>(fav))
-        adapter.notifyDataSetChanged()*/
+        /*viewModel.fetchFoliosData(FirebaseAuth.getInstance().currentUser!!.uid)
 
-        viewModel.fetchFavoritesData(FirebaseAuth.getInstance().currentUser!!.uid)
-
-
-        viewModel.observeFavoritesData().observe(this){
-            println("\n\n****************** Favorites STOCK TICKER: " + it[0].stock_ticker)
-            //findViewById<TextView>(R.id.hello).text = it[0].stock_ticker
-
-            val rv = findViewById<RecyclerView>(R.id.favoritesRecyclerView)
-            rv.layoutManager = LinearLayoutManager(this)
-
-            val adapter = FavoritesAdapter(it)
-            rv.adapter = adapter
-
-        }
-
-
-
-
-        viewModel.fetchFoliosData(FirebaseAuth.getInstance().currentUser!!.uid)
-
-        /*viewModel.observeFoliosData().observe(this){
+        viewModel.observeFoliosData().observe(this){
             //println("\n\n****************** Favorites STOCK TICKER: " + it[0].stock_ticker)
             //findViewById<TextView>(R.id.hello).text = it[0].stock_ticker
 
@@ -143,10 +142,6 @@ class MainActivity : AppCompatActivity() {
 
         }*/
 
-
-//        findViewById<TextView>(R.id.hello).text = viewModel.holdingsMetaList.value!![0].stock_ticker
-
-        //Log.d("Result of Query: ", viewModel.holdingsMetaList.value!![0].ticker)
 
     }
 }

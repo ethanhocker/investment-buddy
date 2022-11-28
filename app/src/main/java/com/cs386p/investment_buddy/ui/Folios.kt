@@ -1,20 +1,17 @@
 package com.cs386p.investment_buddy.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.cs386p.investment_buddy.MainViewModel
-import com.cs386p.investment_buddy.R
 import com.cs386p.investment_buddy.databinding.ActivityFoliosBinding
-import com.cs386p.investment_buddy.databinding.FoliosRowBinding
+import com.cs386p.investment_buddy.databinding.ContentFoliosBinding
 import com.google.firebase.auth.FirebaseAuth
 
 class Folios : AppCompatActivity() {
-    private lateinit var binding: ActivityFoliosBinding
+    private lateinit var binding: ContentFoliosBinding
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,17 +19,15 @@ class Folios : AppCompatActivity() {
         // inflate layout
         val activityFoliosBinding = ActivityFoliosBinding.inflate(layoutInflater)
         setContentView(activityFoliosBinding.root)
+        binding = activityFoliosBinding.contentFolios
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         viewModel.fetchFoliosData(FirebaseAuth.getInstance().currentUser!!.uid)
 
         viewModel.observeFoliosData().observe(this){
-
-            val rv = findViewById<RecyclerView>(R.id.foliosRecyclerView)
-            rv.layoutManager = LinearLayoutManager(this)
-
-            val adapter = FoliosAdapter(it)
-            rv.adapter = adapter
-
+            binding.foliosRecyclerView.layoutManager = LinearLayoutManager(this)
+            binding.foliosRecyclerView.adapter = FoliosAdapter(it)
         }
     }
 

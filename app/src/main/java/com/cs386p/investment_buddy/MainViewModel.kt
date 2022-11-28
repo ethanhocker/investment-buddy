@@ -1,7 +1,6 @@
 package com.cs386p.investment_buddy
 
 import android.util.Log
-import android.widget.TextView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.cs386p.investment_buddy.api.AlphaVantageAPI
@@ -23,12 +22,28 @@ class MainViewModel : ViewModel() {
     private val stockRepository = Repository(alphaVantagAPI)
     private val searchResults = MutableLiveData<MutableList<SearchedStock>?>()
 
+    private var UID = MutableLiveData("Uninitialized")
+
     var holdingsDataList = MutableLiveData<List<HoldingsData>>()
     var favoritesDataList = MutableLiveData<List<FavoritesData>>()
     var foliosDataList = MutableLiveData<List<FoliosData>>()
 
     private val dbHelp = ViewModelDBHelper()
 
+    fun signOut() {
+        FirebaseAuth.getInstance().signOut()
+    }
+
+    fun updateUser() {
+        val user = FirebaseAuth.getInstance().currentUser
+        if(user != null) {
+            UID.postValue(FirebaseAuth.getInstance().currentUser!!.uid)
+        }
+    }
+
+    fun observeUUID() : LiveData<String>{
+        return UID
+    }
 
     fun symbolSearch(symbol: String) = viewModelScope.launch {
         // TODO: rewrite this. Just testing the API here
@@ -40,18 +55,11 @@ class MainViewModel : ViewModel() {
         return searchResults
     }
 
+    /*fun updateDashboard() {
+    }*/
 
-    fun updateUser() {
-        // XXX Write me. Update user data in view model
-        val user = FirebaseAuth.getInstance().currentUser
-    }
-    fun updateDashboard() {
-    }
-
-
-
-    fun fetchHoldingsData() {
-        dbHelp.dbFetchHoldings(holdingsDataList)
+    fun fetchHoldingsData(uid: String) {
+        dbHelp.dbFetchHoldings(uid, holdingsDataList)
     }
 
     fun observeHoldingsData(): LiveData<List<HoldingsData>> {
@@ -62,16 +70,13 @@ class MainViewModel : ViewModel() {
         dbHelp.dbUpdateHoldings(holding)
     }
 
-
-
     fun createTransaction(action: TransactionsData){
-        Log.d("XXX Creating Transaction: ","MVM")
+        Log.d("Creating Transaction: ","MVM")
         dbHelp.dbCreateTransaction(action)
     }
 
-
-    fun fetchFoliosData(uuid: String){
-        dbHelp.dbFetchFolios(uuid,foliosDataList)
+    fun fetchFoliosData(uid: String){
+        dbHelp.dbFetchFolios(uid,foliosDataList)
     }
 
     fun observeFoliosData(): LiveData<List<FoliosData>> {
@@ -79,10 +84,9 @@ class MainViewModel : ViewModel() {
     }
 
     fun updateFolios(folio: FoliosData) {
-        Log.d("XXX Updating User Portfolios: ","MVM")
+        Log.d("Updating User Folios: ","MVM")
         dbHelp.dbUpdateFolios(folio)
     }
-
 
     fun fetchFavoritesData(uuid: String){
         dbHelp.dbFetchFavorites(uuid,favoritesDataList)
@@ -93,7 +97,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun updateFavorites(fav: FavoritesData) {
-        Log.d("XXX Updating User Portfolios: ","MVM")
+        Log.d("Updating User Folios: ","MVM")
         dbHelp.dbUpdateFavorites(fav)
     }
 }

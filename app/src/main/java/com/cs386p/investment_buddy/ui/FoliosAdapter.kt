@@ -17,11 +17,7 @@ class FoliosAdapter(private val FolioList: List<FoliosData>) : RecyclerView.Adap
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         // inflates the card_view_design view
         // that is used to hold list item
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.folios_row, parent, false)
-
-
-
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.folios_row, parent, false)
         return ViewHolder(view)
     }
 
@@ -32,13 +28,11 @@ class FoliosAdapter(private val FolioList: List<FoliosData>) : RecyclerView.Adap
 
         // sets the text to the textview from our itemHolder class
         holder.nameText.text = FolioItem.name
-        //holder.nameText.text = "help"
 
         holder.itemView.setOnClickListener(){
                 Log.d("XXX Folios RV Clicked: ",holder.nameText.text.toString())
-
+            //TODO: Start new activity for Folio Dashboard
         }
-
     }
 
     // return the number of the items in the list
