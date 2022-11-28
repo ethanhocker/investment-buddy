@@ -5,10 +5,6 @@ class Repository(private val api: AlphaVantageAPI) {
         return api.getSymbolSearch(symbol).bestMatches
     }
     suspend fun quoteRequest(symbol: String): Quote {
-        val result = api.getQuote(symbol).globalQuote
-//        val result = api.getQuote(symbol)
-        println("\n\n RESULT IN REPOSITORY: " + result)
-        return result
-//        return Quote("", "", "", "", "", "", "", "", "", "")
+        return api.getQuote(symbol).globalQuote
     }
 }

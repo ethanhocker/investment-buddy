@@ -34,11 +34,11 @@ class StockResearch : AppCompatActivity() {
         viewModel.observeQuoteResults().observe(this){
             val quote = viewModel.observeQuoteResults().value
             if (quote != null) {
-//                binding.currentValue.text = quote.price
+                binding.currentValue.text = quote.price
             }
         }
 
-        // hit API endpoint based on symbol
+        // hit quote API endpoint based on symbol
         if (symbol != null) {
             viewModel.quoteRequest(symbol)
         }

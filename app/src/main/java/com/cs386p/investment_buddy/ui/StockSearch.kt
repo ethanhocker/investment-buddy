@@ -42,7 +42,6 @@ class StockSearch : AppCompatActivity() {
         viewModel.observeSearchResults().observe(this){
             val results = viewModel.observeSearchResults().value
             adapter.submitList(results)
-            println("\n\n results: " + results)
         }
     }
 
