@@ -9,10 +9,14 @@ import com.cs386p.investment_buddy.api.SearchedStock
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+
 import com.cs386p.investment_buddy.collections.HoldingsData
 import com.cs386p.investment_buddy.collections.TransactionsData
 import com.cs386p.investment_buddy.collections.FoliosData
 import com.cs386p.investment_buddy.collections.FavoritesData
+
+import com.cs386p.investment_buddy.api.Quote
+
 import kotlinx.coroutines.launch
 
 import com.google.firebase.auth.FirebaseAuth
@@ -21,6 +25,7 @@ class MainViewModel : ViewModel() {
     private val alphaVantagAPI = AlphaVantageAPI.create()
     private val stockRepository = Repository(alphaVantagAPI)
     private val searchResults = MutableLiveData<MutableList<SearchedStock>?>()
+    private val quoteResults = MutableLiveData<Quote>()
 
     private var UID = MutableLiveData("Uninitialized")
 
@@ -46,9 +51,15 @@ class MainViewModel : ViewModel() {
     }
 
     fun symbolSearch(symbol: String) = viewModelScope.launch {
-        // TODO: rewrite this. Just testing the API here
         val results = stockRepository.symbolSearch(symbol)
-        searchResults.postValue(results.toMutableList())
+        val NYSEresults = mutableListOf<SearchedStock>()
+        // manually filter search results to only include US stocks
+        for (result in results){
+            if (result.region == "United States"){
+                NYSEresults.add(result)
+            }
+        }
+        searchResults.postValue(NYSEresults)
     }
 
     fun observeSearchResults(): MutableLiveData<MutableList<SearchedStock>?> {
@@ -100,4 +111,15 @@ class MainViewModel : ViewModel() {
         Log.d("Updating User Folios: ","MVM")
         dbHelp.dbUpdateFavorites(fav)
     }
+
+    fun quoteRequest(symbol: String) = viewModelScope.launch {
+        val result = stockRepository.quoteRequest(symbol)
+        println("\n\n********result for quote: " + result)
+        quoteResults.postValue(result)
+    }
+
+    fun observeQuoteResults(): MutableLiveData<Quote>{
+        return quoteResults
+    }
+
 }

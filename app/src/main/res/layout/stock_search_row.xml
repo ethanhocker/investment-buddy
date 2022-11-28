@@ -8,13 +8,25 @@
 
     <TextView
         android:id="@+id/symbol"
-        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_width="0dp"
         android:paddingBottom="10dp"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/stockName"
+    />
+
+    <TextView
+        android:id="@+id/stockName"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:paddingBottom="10dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/symbol"
         app:layout_constraintEnd_toEndOf="parent"
     />
 
