@@ -41,6 +41,11 @@
             android:label="Stock Research"
             android:windowSoftInputMode="adjustResize"/>
 
+        <activity
+            android:name=".ui.FolioDashboard"
+            android:label="FakeFolios"
+            android:windowSoftInputMode="adjustResize"/>
+
     </application>
 
 </manifest>

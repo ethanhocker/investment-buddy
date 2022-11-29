@@ -18,7 +18,7 @@ class ViewModelDBHelper() {
     private val collectionFavorites = "Favorites"
 
     fun dbFetchHoldings(user: String, holdingsList: MutableLiveData<List<HoldingsData>>){
-        db.collection(collectionHoldings).whereEqualTo("uid",user).orderBy("stock_ticker", Query.Direction.ASCENDING).get()
+        db.collection(collectionHoldings).whereEqualTo("uid",user).get()
             .addOnSuccessListener { result ->
                 Log.d(javaClass.simpleName, "Holdings fetch ${result!!.documents.size}")
                 // NB: This is done on a background thread

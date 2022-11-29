@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/folioNameFD"
+        />
+
+    <TextView
+        android:id="@+id/folioNameFD"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="(Folio Name)"
+        android:textSize="24dp"
+        android:textStyle="bold"
+        android:padding="10dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/totalBalanceLabel"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/white"
+        app:layout_constraintTop_toBottomOf="@id/folioNameFD"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/totalBalanceLabel"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:text="Total Portfolio Balance:"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:padding="10dp"
+        app:layout_constraintTop_toBottomOf="@id/folioNameFD"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/currentValue"
+        />
+
+    <TextView
+        android:id="@+id/currentValue"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="$ XX,XXX.XX"
+        android:textSize="20dp"
+        android:padding="10dp"
+        app:layout_constraintTop_toBottomOf="@id/folioNameFD"
+        app:layout_constraintStart_toEndOf="@id/totalBalanceLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/unrealizedGainLabel"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:text="Unrealized Gains:"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:padding="10dp"
+        app:layout_constraintTop_toBottomOf="@id/totalBalanceLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/unrealizedGain"
+        />
+
+    <TextView
+        android:id="@+id/unrealizedGain"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="$ XX,XXX.XX"
+        android:textSize="20dp"
+        android:padding="10dp"
+        app:layout_constraintTop_toBottomOf="@id/totalBalanceLabel"
+        app:layout_constraintStart_toEndOf="@id/unrealizedGainLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/totalReturnRateLabel"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:text="Total Rate of Return (RoR):"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:padding="10dp"
+        app:layout_constraintTop_toBottomOf="@id/unrealizedGainLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/totalReturnRate"
+        />
+
+    <TextView
+        android:id="@+id/totalReturnRate"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="+/- XX.XX%"
+        android:textSize="20dp"
+        android:padding="10dp"
+        app:layout_constraintTop_toBottomOf="@id/unrealizedGain"
+        app:layout_constraintStart_toEndOf="@id/totalReturnRateLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/holdingsLabel"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:text="Holdings"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:padding="10dp"
+        app:layout_constraintTop_toBottomOf="@id/totalReturnRateLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/RoRLabel"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="RoR Since Inception"
+        android:textSize="14dp"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/holdingsLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/balanceLabel"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Balance"
+        android:textSize="14dp"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/holdingsLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/folioDashboardRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/holdingsLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/addButtonFD"
+        />
+
+    <Button
+        android:id="@+id/addButtonFD"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Buy"
+        android:textSize="14dp"
+        android:textColor="#000000"
+        android:backgroundTint="#4CAF50"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/favoriteButtonFD"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <Button
+        android:id="@+id/favoriteButtonFD"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sell"
+        android:textSize="14dp"
+        android:textColor="#000000"
+        android:backgroundTint="#4CAF50"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintStart_toEndOf="@id/addButtonFD"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

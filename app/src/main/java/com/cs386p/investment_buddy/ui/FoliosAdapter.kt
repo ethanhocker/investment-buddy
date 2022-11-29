@@ -1,7 +1,6 @@
 package com.cs386p.investment_buddy.ui
 
-import android.annotation.SuppressLint
-import android.graphics.Color
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -30,8 +29,11 @@ class FoliosAdapter(private val FolioList: List<FoliosData>) : RecyclerView.Adap
         holder.nameText.text = FolioItem.name
 
         holder.itemView.setOnClickListener(){
-                Log.d("XXX Folios RV Clicked: ",holder.nameText.text.toString())
+            Log.d("XXX Folios RV Clicked: ",holder.nameText.text.toString())
             //TODO: Start new activity for Folio Dashboard
+            val folioDashboardClass = FolioDashboard()
+            val intent = Intent(holder.itemView.context, folioDashboardClass::class.java)
+            holder.itemView.context.startActivity(intent)
         }
     }
 
