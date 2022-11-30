@@ -1,10 +1,14 @@
 package com.cs386p.investment_buddy.api
 
-class Repository(private val api: AlphaVantageAPI) {
+class Repository(private val alphaApi: AlphaVantageAPI, private val finnhubApi: FinnhubAPI) {
     suspend fun symbolSearch(symbol: String): List<SearchedStock> {
-        return api.getSymbolSearch(symbol).bestMatches
+        return alphaApi.getSymbolSearch(symbol).bestMatches
     }
-    suspend fun quoteRequest(symbol: String): Quote {
-        return api.getQuote(symbol).globalQuote
+    suspend fun alphaQuoteRequest(symbol: String): AlphaQuote {
+        return alphaApi.getQuote(symbol).globalQuote
+    }
+    // finnhub quotes have a less strict request limit of 60 api calls/minute
+    suspend fun finnhubQuoteRequest(symbol: String): FinnhubQuote {
+        return finnhubApi.getQuote(symbol)
     }
 }
