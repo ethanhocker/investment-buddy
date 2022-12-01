@@ -3,20 +3,15 @@ package com.cs386p.investment_buddy
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.cs386p.investment_buddy.api.AlphaVantageAPI
-import com.cs386p.investment_buddy.api.Repository
-import com.cs386p.investment_buddy.api.SearchedStock
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cs386p.investment_buddy.api.*
 
 import com.cs386p.investment_buddy.collections.HoldingsData
 import com.cs386p.investment_buddy.collections.TransactionsData
 import com.cs386p.investment_buddy.collections.FoliosData
 import com.cs386p.investment_buddy.collections.FavoritesData
-
-import com.cs386p.investment_buddy.api.Quote
-import com.cs386p.investment_buddy.ui.FoliosAdapter
 
 import kotlinx.coroutines.launch
 
@@ -24,9 +19,11 @@ import com.google.firebase.auth.FirebaseAuth
 
 class MainViewModel : ViewModel() {
     private val alphaVantagAPI = AlphaVantageAPI.create()
-    private val stockRepository = Repository(alphaVantagAPI)
+    private val finnhubAPI = FinnhubAPI.create()
+    private val stockRepository = Repository(alphaVantagAPI, finnhubAPI)
     private val searchResults = MutableLiveData<MutableList<SearchedStock>?>()
-    private val quoteResults = MutableLiveData<Quote>()
+    private val alphaQuoteResults = MutableLiveData<AlphaQuote>()
+    private val finnhubQuoteResults = MutableLiveData<FinnhubQuote>()
 
     private var UID = MutableLiveData("Uninitialized")
 
@@ -54,9 +51,11 @@ class MainViewModel : ViewModel() {
         val results = stockRepository.symbolSearch(symbol)
         val NYSEresults = mutableListOf<SearchedStock>()
         // manually filter search results to only include US stocks
-        for (result in results){
-            if (result.region == "United States"){
-                NYSEresults.add(result)
+        if (results != null) {
+            for (result in results) {
+                if (result.region == "United States") {
+                    NYSEresults.add(result)
+                }
             }
         }
         searchResults.postValue(NYSEresults)
@@ -116,14 +115,22 @@ class MainViewModel : ViewModel() {
         dbHelp.dbUpdateFavorites(fav)
     }
 
-    fun quoteRequest(symbol: String) = viewModelScope.launch {
-        val result = stockRepository.quoteRequest(symbol)
-        println("\n\n********result for quote: " + result)
-        quoteResults.postValue(result)
+    fun alphaQuoteRequest(symbol: String) = viewModelScope.launch {
+        val result = stockRepository.alphaQuoteRequest(symbol)
+        alphaQuoteResults.postValue(result)
     }
 
-    fun observeQuoteResults(): MutableLiveData<Quote>{
-        return quoteResults
+    fun observeAlphaQuoteResults(): MutableLiveData<AlphaQuote>{
+        return alphaQuoteResults
+    }
+
+    fun finnhubQuoteRequest(symbol: String) = viewModelScope.launch {
+        val result = stockRepository.finnhubQuoteRequest(symbol)
+        finnhubQuoteResults.postValue(result)
+    }
+
+    fun observeFinnhubQuoteResults(): MutableLiveData<FinnhubQuote>{
+        return finnhubQuoteResults
     }
 
     companion object{
@@ -137,5 +144,4 @@ class MainViewModel : ViewModel() {
             dbHelp.dbFetchFolios(uid,foliosDataList)
         }
     }
-
 }

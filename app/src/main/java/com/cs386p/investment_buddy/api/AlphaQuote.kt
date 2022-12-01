@@ -2,7 +2,7 @@ package com.cs386p.investment_buddy.api
 
 import com.google.gson.annotations.SerializedName
 
-data class Quote (
+data class AlphaQuote (
     @SerializedName("01. symbol")
     val symbol: String,
     @SerializedName("02. open")

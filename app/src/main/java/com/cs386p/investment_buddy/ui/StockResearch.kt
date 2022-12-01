@@ -31,16 +31,16 @@ class StockResearch : AppCompatActivity() {
         binding.stockName.text = stockName
 
         // observe quote results and update text on change
-        viewModel.observeQuoteResults().observe(this){
-            val quote = viewModel.observeQuoteResults().value
+        viewModel.observeFinnhubQuoteResults().observe(this){
+            val quote = viewModel.observeFinnhubQuoteResults().value
             if (quote != null) {
-                binding.currentValue.text = quote.price
+                binding.currentValue.text = quote.currentPrice
             }
         }
 
         // hit quote API endpoint based on symbol
         if (symbol != null) {
-            viewModel.quoteRequest(symbol)
+            viewModel.finnhubQuoteRequest(symbol)
         }
     }
 
