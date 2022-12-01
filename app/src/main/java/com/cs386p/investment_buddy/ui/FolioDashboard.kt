@@ -23,12 +23,20 @@ class FolioDashboard : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        val layoutManager = LinearLayoutManager(this)
+        binding.folioDashboardRecyclerView.layoutManager = layoutManager
+        val adapter = FolioDashboardAdapter()
+        binding.folioDashboardRecyclerView.adapter = adapter
+
         viewModel.fetchHoldingsData(FirebaseAuth.getInstance().currentUser!!.uid)
 
         viewModel.observeHoldingsData().observe(this) {
-            binding.folioDashboardRecyclerView.layoutManager = LinearLayoutManager(this)
-            binding.folioDashboardRecyclerView.adapter = FolioDashboardAdapter(it)
+            val results = viewModel.observeHoldingsData().value
+            adapter.submitList(results)
         }
+
+        binding.folioNameFD.text = intent.getStringExtra("folioName")
+
     }
 
     private fun doFinish() {

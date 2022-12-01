@@ -3,69 +3,62 @@ package com.cs386p.investment_buddy.ui
 import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.cs386p.investment_buddy.R
 import com.cs386p.investment_buddy.collections.HoldingsData
+import com.cs386p.investment_buddy.databinding.FoliodashboardRowBinding
 
-class FolioDashboardAdapter(private val HoldingsList: List<HoldingsData>) : RecyclerView.Adapter<FolioDashboardAdapter.ViewHolder>() {
+class FolioDashboardAdapter : ListAdapter<HoldingsData, FolioDashboardAdapter.VH>(FolioDashboardDiff()) {
+    class FolioDashboardDiff : DiffUtil.ItemCallback<HoldingsData>() {
+        override fun areItemsTheSame(oldItem: HoldingsData, newItem: HoldingsData): Boolean {
+            return oldItem.stock_ticker == newItem.stock_ticker
+        }
 
-    // create new views
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        // inflates the card_view_design view
-        // that is used to hold list item
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.foliodashboard_row, parent, false)
-        return ViewHolder(view)
+        // TODO: This can be expanded for completeness if more fields are determined to be relevant
+        override fun areContentsTheSame(oldItem: HoldingsData, newItem: HoldingsData): Boolean {
+            return oldItem.stock_ticker == newItem.stock_ticker
+        }
     }
 
-    // binds the list items to a view
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    inner class VH(val binding: FoliodashboardRowBinding)
+        : RecyclerView.ViewHolder(binding.root)
 
-        val HoldingItem = HoldingsList[position]
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+        val foliodashboardRowBinding = FoliodashboardRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return VH(foliodashboardRowBinding)
+    }
+
+    override fun onBindViewHolder(holder: VH, position: Int) {
+        val binding = holder.binding
 
         // sets the text to the textview from our itemHolder class
-        holder.tickerText.text = HoldingItem.stock_ticker
-        holder.stockNameText.text = HoldingItem.stock_name
-        holder.holdingValueText.text = "$15,000.00"
-        holder.personalChangePercentText.text = "+6.69"
-        holder.inceptionDateText.text = HoldingItem.inception_date
+        binding.tickerFolioDashRV.text = currentList[position].stock_ticker
+        binding.stockNameFolioDashRV.text = currentList[position].stock_name
+        binding.totalHoldingValueFolioDashRV.text = "$15,000.00"
+        binding.personalChangePercentFolioDashRV.text = "+6.69"
+        binding.personalChangeDateFolioDashRV.text = currentList[position].inception_date
 
-        if(holder.personalChangePercentText.text.toString().toDouble() > 0)
+        if(binding.personalChangePercentFolioDashRV.text.toString().toDouble() > 0)
         {
-            holder.personalChangePercentText.setTextColor(Color.GREEN)
-            holder.unitText.setTextColor(Color.GREEN)
+            binding.personalChangePercentFolioDashRV.setTextColor(Color.GREEN)
+            binding.unitFolioDashRV.setTextColor(Color.GREEN)
         }
-        else if (holder.personalChangePercentText.text.toString().toDouble() < 0)
+        else if (binding.personalChangePercentFolioDashRV.text.toString().toDouble() < 0)
         {
-            holder.personalChangePercentText.setTextColor(Color.RED)
-            holder.unitText.setTextColor(Color.RED)
+            binding.personalChangePercentFolioDashRV.setTextColor(Color.RED)
+            binding.unitFolioDashRV.setTextColor(Color.RED)
         }
         else
         {
-            holder.personalChangePercentText.setTextColor(Color.WHITE)
-            holder.unitText.setTextColor(Color.WHITE)
+            binding.personalChangePercentFolioDashRV.setTextColor(Color.WHITE)
+            binding.unitFolioDashRV.setTextColor(Color.WHITE)
         }
 
         holder.itemView.setOnClickListener(){
-            Log.d("XXX Holding RV Clicked: ",holder.tickerText.text.toString())
+            Log.d("XXX Holding RV Clicked: ",binding.tickerFolioDashRV.text.toString())
             //TODO: Look into using this for sell (true or false)
         }
-    }
-
-    // return the number of the items in the list
-    override fun getItemCount(): Int {
-        return HoldingsList.size
-    }
-
-    // Holds the views for adding it to image and text
-    class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
-        val tickerText: TextView = itemView.findViewById(R.id.tickerFolioDashRV)
-        val stockNameText: TextView = itemView.findViewById(R.id.stockNameFolioDashRV)
-        val holdingValueText: TextView = itemView.findViewById(R.id.totalHoldingValueFolioDashRV)
-        val personalChangePercentText: TextView = itemView.findViewById(R.id.personalChangePercentFolioDashRV)
-        val unitText: TextView = itemView.findViewById(R.id.unitFolioDashRV)
-        val inceptionDateText: TextView = itemView.findViewById(R.id.personalChangeDateFolioDashRV)
     }
 }

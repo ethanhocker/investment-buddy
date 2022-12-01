@@ -3,47 +3,63 @@ package com.cs386p.investment_buddy.ui
 import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.cs386p.investment_buddy.R
 import com.cs386p.investment_buddy.collections.FoliosData
+import com.cs386p.investment_buddy.databinding.FoliosRowBinding
 
-class FoliosAdapter(private val FolioList: List<FoliosData>) : RecyclerView.Adapter<FoliosAdapter.ViewHolder>() {
+import androidx.recyclerview.widget.ListAdapter
+import com.cs386p.investment_buddy.MainViewModel
+import com.google.firebase.auth.FirebaseAuth
 
-    // create new views
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        // inflates the card_view_design view
-        // that is used to hold list item
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.folios_row, parent, false)
-        return ViewHolder(view)
-    }
 
-    // binds the list items to a view
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+class FoliosAdapter: ListAdapter<FoliosData,FoliosAdapter.VH>(FoliosDiff()) {
+    class FoliosDiff : DiffUtil.ItemCallback<FoliosData>() {
+        override fun areItemsTheSame(oldItem: FoliosData, newItem: FoliosData): Boolean {
+            return oldItem.port_num == newItem.port_num
+        }
 
-        val FolioItem = FolioList[position]
-
-        // sets the text to the textview from our itemHolder class
-        holder.nameText.text = FolioItem.name
-
-        holder.itemView.setOnClickListener(){
-            Log.d("XXX Folios RV Clicked: ",holder.nameText.text.toString())
-            //TODO: Start new activity for Folio Dashboard
-            val folioDashboardClass = FolioDashboard()
-            val intent = Intent(holder.itemView.context, folioDashboardClass::class.java)
-            holder.itemView.context.startActivity(intent)
+        // TODO: This can be expanded for completeness if more fields are determined to be relevant
+        override fun areContentsTheSame(oldItem: FoliosData, newItem: FoliosData): Boolean {
+            return oldItem.port_num == newItem.port_num
         }
     }
 
-    // return the number of the items in the list
-    override fun getItemCount(): Int {
-        return FolioList.size
+    inner class VH(val binding: FoliosRowBinding)
+        : RecyclerView.ViewHolder(binding.root)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+        // inflates the card_view_design view
+        // that is used to hold list item
+        val foliosRowBinding = FoliosRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return VH(foliosRowBinding)
     }
 
-    // Holds the views for adding it to image and text
-    class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
-        val nameText: TextView = itemView.findViewById(R.id.nameFolio)
+    // binds the list items to a view
+    override fun onBindViewHolder(holder: VH, position: Int) {
+        val binding = holder.binding
+        val user = FirebaseAuth.getInstance().currentUser!!.uid
+
+        // sets the text to the textview from our itemHolder class
+        binding.nameFolio.text = currentList[position].name
+
+        binding.nameFolio.setOnClickListener(){
+            Log.d("XXX Folios RV Clicked: ",binding.nameFolio.text.toString())
+            //TODO: Start new activity for Folio Dashboard
+
+            val folioDashboardClass = FolioDashboard()
+            val intent = Intent(holder.itemView.context, folioDashboardClass::class.java)
+            intent.putExtra("folioName", binding.nameFolio.text.toString())
+            holder.itemView.context.startActivity(intent)
+        }
+
+        binding.deleteFolioBTN.setOnClickListener(){
+            Log.d("XXX Folios RV Delete Icon Clicked: ",binding.nameFolio.text.toString())
+            //TODO: Call delete FakeFolio and data
+            val viewModel = MainViewModel()
+            viewModel.deleteFolios(user, binding.nameFolio.text.toString())
+        }
     }
+
 }

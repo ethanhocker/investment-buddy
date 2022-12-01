@@ -23,10 +23,7 @@ import com.google.firebase.Timestamp
 
 import com.cs386p.investment_buddy.databinding.ActivityMainBinding
 import com.cs386p.investment_buddy.databinding.ContentMainBinding
-import com.cs386p.investment_buddy.ui.FavoritesAdapter
-import com.cs386p.investment_buddy.ui.StockSearch
-import com.cs386p.investment_buddy.ui.Folios
-import com.cs386p.investment_buddy.ui.FoliosAdapter
+import com.cs386p.investment_buddy.ui.*
 import okhttp3.internal.notify
 
 
@@ -46,6 +43,11 @@ class MainActivity : AppCompatActivity() {
         val activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMainBinding.root)
         binding = activityMainBinding.contentMain
+
+        val layoutManager = LinearLayoutManager(this)
+        binding.favoritesRecyclerView.layoutManager = layoutManager
+        val adapter = FavoritesAdapter()
+        binding.favoritesRecyclerView.adapter = adapter
 
         // Set default mode for app to dark mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -79,8 +81,8 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.observeFavoritesData().observe(this){
 
-            binding.favoritesRecyclerView.layoutManager = LinearLayoutManager(this)
-            binding.favoritesRecyclerView.adapter =  FavoritesAdapter(it)
+            val results = viewModel.observeFavoritesData().value
+            adapter.submitList(results)
         }
 
         //TODO: Delete the rest of these functions and inputs once they are placed elsewhere

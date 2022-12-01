@@ -16,6 +16,7 @@ import com.cs386p.investment_buddy.collections.FoliosData
 import com.cs386p.investment_buddy.collections.FavoritesData
 
 import com.cs386p.investment_buddy.api.Quote
+import com.cs386p.investment_buddy.ui.FoliosAdapter
 
 import kotlinx.coroutines.launch
 
@@ -29,9 +30,11 @@ class MainViewModel : ViewModel() {
 
     private var UID = MutableLiveData("Uninitialized")
 
-    var holdingsDataList = MutableLiveData<List<HoldingsData>>()
-    var favoritesDataList = MutableLiveData<List<FavoritesData>>()
-    var foliosDataList = MutableLiveData<List<FoliosData>>()
+    var holdingsDataList = MutableLiveData<MutableList<HoldingsData>>()
+    var favoritesDataList = MutableLiveData<MutableList<FavoritesData>>()
+    var foliosDataList = MutableLiveData<MutableList<FoliosData>>()
+
+    private var folioName = MutableLiveData<String>()
 
     private val dbHelp = ViewModelDBHelper()
 
@@ -73,7 +76,7 @@ class MainViewModel : ViewModel() {
         dbHelp.dbFetchHoldings(uid, holdingsDataList)
     }
 
-    fun observeHoldingsData(): LiveData<List<HoldingsData>> {
+    fun observeHoldingsData(): MutableLiveData<MutableList<HoldingsData>> {
         return holdingsDataList
     }
 
@@ -90,7 +93,7 @@ class MainViewModel : ViewModel() {
         dbHelp.dbFetchFolios(uid,foliosDataList)
     }
 
-    fun observeFoliosData(): LiveData<List<FoliosData>> {
+    fun observeFoliosData(): MutableLiveData<MutableList<FoliosData>> {
         return foliosDataList
     }
 
@@ -99,11 +102,24 @@ class MainViewModel : ViewModel() {
         dbHelp.dbUpdateFolios(folio)
     }
 
-    fun fetchFavoritesData(uuid: String){
-        dbHelp.dbFetchFavorites(uuid,favoritesDataList)
+    fun updateFolioName(name: String){
+        folioName.postValue(name)
     }
 
-    fun observeFavoritesData(): LiveData<List<FavoritesData>> {
+    fun observeFolioName(): String{
+        return folioName.value.toString()
+    }
+
+    fun deleteFolios(uid: String, folioName: String){
+        dbHelp.dbDeleteFolios(uid,folioName)
+        foliosDataList.postValue(mutableListOf())
+    }
+
+    fun fetchFavoritesData(uid: String){
+        dbHelp.dbFetchFavorites(uid,favoritesDataList)
+    }
+
+    fun observeFavoritesData(): MutableLiveData<MutableList<FavoritesData>> {
         return favoritesDataList
     }
 

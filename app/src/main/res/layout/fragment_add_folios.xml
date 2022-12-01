@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context=".ui.AddFoliosFragment"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/messageTV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Give your FakeFolio a name and starting balance."
+        android:textSize="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+    />
+
+    <TextView
+        android:id="@+id/nameTV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Fake Folio Name: "
+        android:textSize="14dp"
+        app:layout_constraintBaseline_toBaselineOf="@id/nameET"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <EditText
+        android:id="@+id/nameET"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="FakeFolio Name"
+        android:textSize="14dp"
+        app:layout_constraintStart_toEndOf="@id/nameTV"
+        app:layout_constraintTop_toBottomOf="@+id/messageTV"
+        app:layout_constraintEnd_toEndOf="parent"
+    />
+
+    <TextView
+        android:id="@+id/balanceTV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Starting Balance: "
+        android:textSize="14dp"
+        app:layout_constraintBaseline_toBaselineOf="@id/balanceET"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <EditText
+        android:id="@+id/balanceET"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="12,345.67"
+        android:textSize="14dp"
+        app:layout_constraintStart_toEndOf="@id/balanceTV"
+        app:layout_constraintTop_toBottomOf="@+id/nameET"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <Button
+        android:id="@+id/createFolioBTN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create"
+        android:textSize="14dp"
+        android:textColor="#000000"
+        android:backgroundTint="#4CAF50"
+        app:layout_constraintTop_toBottomOf="@+id/balanceET"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
