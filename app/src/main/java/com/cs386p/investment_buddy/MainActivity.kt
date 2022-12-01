@@ -1,30 +1,29 @@
 package com.cs386p.investment_buddy
 
+//TODO Remove unused imports after moving unused functions
+
+import android.R
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.PopupWindow
+import android.widget.TextView
 import androidx.activity.viewModels
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-
-import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
-import com.google.firebase.auth.FirebaseAuth
-
-//TODO Remove unused imports after moving unused functions
-import com.cs386p.investment_buddy.collections.HoldingsData
-import com.cs386p.investment_buddy.collections.TransactionsData
-import com.cs386p.investment_buddy.collections.FoliosData
-import com.cs386p.investment_buddy.collections.FavoritesData
-import com.google.firebase.Timestamp
-
 import com.cs386p.investment_buddy.databinding.ActivityMainBinding
 import com.cs386p.investment_buddy.databinding.ContentMainBinding
 import com.cs386p.investment_buddy.ui.*
 import okhttp3.internal.notify
+import com.cs386p.investment_buddy.ui.FavoritesAdapter
+import com.cs386p.investment_buddy.ui.Folios
+import com.cs386p.investment_buddy.ui.StockSearch
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 
 
 class MainActivity : AppCompatActivity() {
@@ -38,6 +37,7 @@ class MainActivity : AppCompatActivity() {
             viewModel.updateUser()
         }
 
+    @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
@@ -55,32 +55,91 @@ class MainActivity : AppCompatActivity() {
         UID = viewModel.observeUUID().value.toString()
         println("\n\n****************** MainActivity UID: " + UID)
 
-        // Start StockSearch activity when analyze text view is clicked
+        // start StockSearch activity when analyze text view is clicked
         binding.analyze.setOnClickListener {
             val stockSearchClass = StockSearch()
             val intent = Intent(this, stockSearchClass::class.java)
             this.startActivity(intent)
         }
 
+        // start Folios activity when folios text view is clicked
         binding.fakefolios.setOnClickListener{
             val foliosClass = Folios()
             val intent = Intent(this, foliosClass::class.java)
             this.startActivity(intent)
         }
 
+        // sign the user out of firestore when the sign out button is clicked
         binding.signOutBTN.setOnClickListener(){
             viewModel.signOut()
             AuthInit(viewModel, signInLauncher)
         }
 
-        //viewModel.symbolSearch() //TODO: Delete me - just for testing
 
+        // A long with the accompanying layout, all instance of this code and similar code are largely derived from:
+        // https://stackoverflow.com/questions/5944987/how-to-create-a-popup-window-popupwindow-in-android
+
+        // add popup for analyzing stocks info
+        binding.analyzeInfo.setOnClickListener {
+            // inflate the layout of the popup window
+            val popupView = LayoutInflater.from(this).inflate(
+                com.cs386p.investment_buddy.R.layout.popup_window,
+                activityMainBinding.root,
+                false
+            )
+            val infoTextView = popupView.findViewById<TextView>(com.cs386p.investment_buddy.R.id.infoText)
+            infoTextView.text = "Analyze stocks allows you to search for NYSE stocks and view research about each stock."
+
+            // create the popup window
+            val width = LinearLayout.LayoutParams.WRAP_CONTENT
+            val height = LinearLayout.LayoutParams.WRAP_CONTENT
+            val focusable = true // lets taps outside the popup also dismiss it
+            val popupWindow = PopupWindow(popupView, width, height, focusable)
+
+            // show the popup window
+            popupWindow.showAtLocation(binding.analyzeInfo, Gravity.CENTER, 0, 0)
+
+            // dismiss the popup window when touched
+            popupView.setOnTouchListener { v, event ->
+                popupWindow.dismiss()
+                true
+            }
+        }
+
+        // add popup for fakefolios info
+        binding.fakefoliosInfo.setOnClickListener {
+            // inflate the layout of the popup window
+            val popupView = LayoutInflater.from(this).inflate(
+                com.cs386p.investment_buddy.R.layout.popup_window,
+                activityMainBinding.root,
+                false
+            )
+            val infoTextView = popupView.findViewById<TextView>(com.cs386p.investment_buddy.R.id.infoText)
+            infoTextView.text = "Fakefolios are fake stock portfolios you can manage risk-free. " +
+                    "Stocks can be purchased for a Fakefolio from a Stock Research page."
+
+            // create the popup window
+            val width = LinearLayout.LayoutParams.WRAP_CONTENT
+            val height = LinearLayout.LayoutParams.WRAP_CONTENT
+            val focusable = true // lets taps outside the popup also dismiss it
+            val popupWindow = PopupWindow(popupView, width, height, focusable)
+
+            // show the popup window
+            popupWindow.showAtLocation(binding.fakefoliosInfo, Gravity.CENTER, 0, 0)
+
+            // dismiss the popup window when touched
+            popupView.setOnTouchListener { v, event ->
+                popupWindow.dismiss()
+                true
+            }
+        }
+
+        // log user in
         AuthInit(viewModel, signInLauncher)
 
+        // fetch favorites data from database and update adapter when favorites are changed
         viewModel.fetchFavoritesData(UID)
-
         viewModel.observeFavoritesData().observe(this){
-
             val results = viewModel.observeFavoritesData().value
             adapter.submitList(results)
         }
