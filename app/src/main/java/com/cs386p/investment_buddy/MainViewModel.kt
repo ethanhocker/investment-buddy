@@ -68,8 +68,8 @@ class MainViewModel : ViewModel() {
     /*fun updateDashboard() {
     }*/
 
-    fun fetchHoldingsData(uid: String) {
-        dbHelp.dbFetchHoldings(uid, holdingsDataList)
+    fun fetchHoldingsData(uid: String, portNum: String) {
+        dbHelp.dbFetchHoldings(uid,portNum, holdingsDataList)
     }
 
     fun observeHoldingsData(): MutableLiveData<MutableList<HoldingsData>> {

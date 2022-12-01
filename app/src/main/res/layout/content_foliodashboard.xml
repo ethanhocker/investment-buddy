@@ -158,11 +158,11 @@
         app:layout_constraintTop_toBottomOf="@+id/holdingsLabel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/addButtonFD"
+        app:layout_constraintBottom_toTopOf="@id/buyButtonFD"
         />
 
     <Button
-        android:id="@+id/addButtonFD"
+        android:id="@+id/buyButtonFD"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Buy"
@@ -171,12 +171,12 @@
         android:backgroundTint="#4CAF50"
         android:layout_marginBottom="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/favoriteButtonFD"
+        app:layout_constraintEnd_toStartOf="@id/sellButtonFD"
         app:layout_constraintBottom_toBottomOf="parent"
         />
 
     <Button
-        android:id="@+id/favoriteButtonFD"
+        android:id="@+id/sellButtonFD"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Sell"
@@ -184,7 +184,7 @@
         android:textColor="#000000"
         android:backgroundTint="#4CAF50"
         android:layout_marginBottom="10dp"
-        app:layout_constraintStart_toEndOf="@id/addButtonFD"
+        app:layout_constraintStart_toEndOf="@id/buyButtonFD"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         />

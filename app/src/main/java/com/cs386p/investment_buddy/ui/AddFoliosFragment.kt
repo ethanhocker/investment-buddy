@@ -13,6 +13,8 @@ import com.cs386p.investment_buddy.R
 import com.cs386p.investment_buddy.collections.FoliosData
 import com.cs386p.investment_buddy.databinding.FragmentAddFoliosBinding
 import com.google.firebase.auth.FirebaseAuth
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class AddFoliosFragment : DialogFragment() {
     private lateinit var binding: FragmentAddFoliosBinding
@@ -37,9 +39,13 @@ class AddFoliosFragment : DialogFragment() {
 
         create.setOnClickListener(){
             Log.d("XXX Create Button Clicked ", name.text.toString() + " " + balance.text.toString())
+            val dNow = Date()
+            val ft = SimpleDateFormat("yyMMddhhmmssMs")
+
+
             var folio = FoliosData(
                 uid = FirebaseAuth.getInstance().currentUser!!.uid,
-                port_num = 11, //TODO figure out how to make this unique
+                port_num = ft.format(dNow),
                 aab = balance.text.toString().toDouble(),
                 name = name.text.toString()
             )

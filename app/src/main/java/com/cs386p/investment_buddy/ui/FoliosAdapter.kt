@@ -49,6 +49,7 @@ class FoliosAdapter: ListAdapter<FoliosData,FoliosAdapter.VH>(FoliosDiff()) {
             val folioDashboardClass = FolioDashboard()
             val intent = Intent(holder.itemView.context, folioDashboardClass::class.java)
             intent.putExtra("folioName", binding.nameFolio.text.toString())
+            intent.putExtra("folioPortNum",currentList[position].port_num)
             holder.itemView.context.startActivity(intent)
         }
 

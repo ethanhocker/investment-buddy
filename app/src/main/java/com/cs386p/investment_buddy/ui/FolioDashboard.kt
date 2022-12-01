@@ -1,5 +1,6 @@
 package com.cs386p.investment_buddy.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
@@ -28,15 +29,24 @@ class FolioDashboard : AppCompatActivity() {
         val adapter = FolioDashboardAdapter()
         binding.folioDashboardRecyclerView.adapter = adapter
 
-        viewModel.fetchHoldingsData(FirebaseAuth.getInstance().currentUser!!.uid)
+        val folioName = intent.getStringExtra("folioName").toString()
+        val folioPortNum = intent.getStringExtra("folioPortNum").toString()
+        binding.folioNameFD.text = folioName
+
+        viewModel.fetchHoldingsData(FirebaseAuth.getInstance().currentUser!!.uid,folioPortNum)
 
         viewModel.observeHoldingsData().observe(this) {
             val results = viewModel.observeHoldingsData().value
             adapter.submitList(results)
         }
 
-        binding.folioNameFD.text = intent.getStringExtra("folioName")
 
+
+        binding.buyButtonFD.setOnClickListener(){
+            val stockSearchClass = StockSearch()
+            val intent = Intent(this, stockSearchClass::class.java)
+            this.startActivity(intent)
+        }
     }
 
     private fun doFinish() {

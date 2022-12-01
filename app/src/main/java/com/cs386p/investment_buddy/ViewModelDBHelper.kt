@@ -19,10 +19,10 @@ class ViewModelDBHelper() {
     private val collectionFolios = "Folios"
     private val collectionFavorites = "Favorites"
 
-    fun dbFetchHoldings(user: String, holdingsList: MutableLiveData<MutableList<HoldingsData>>){
+    fun dbFetchHoldings(user: String, portNum: String, holdingsList: MutableLiveData<MutableList<HoldingsData>>){
         val Holdingsresults = mutableListOf<HoldingsData>()
 
-        db.collection(collectionHoldings).whereEqualTo("uid",user).get()
+        db.collection(collectionHoldings).whereEqualTo("uid",user).whereEqualTo("port_num", portNum).get()
             .addOnSuccessListener { result ->
                 Log.d(javaClass.simpleName, "Holdings fetch ${result!!.documents.size}")
                 // NB: This is done on a background thread
