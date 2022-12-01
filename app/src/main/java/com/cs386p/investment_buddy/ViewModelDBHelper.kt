@@ -99,7 +99,9 @@ class ViewModelDBHelper() {
                 else
                 {
                     folio.firestoreID = db.collection(collectionFolios).document().id
-                    db.collection(collectionFolios).document(folio.firestoreID).set(folio)
+                    db.collection(collectionFolios).document(folio.firestoreID).set(folio).addOnSuccessListener {
+                        MainViewModel.fetchFoliosData(folio.uid)
+                    }
                 }
 
             }
@@ -115,7 +117,9 @@ class ViewModelDBHelper() {
                 // NB: This is done on a background thread
                 if(result!!.documents.size > 0)
                 {
-                    db.collection(collectionFolios).document(result.documents[0].id).delete()
+                    db.collection(collectionFolios).document(result.documents[0].id).delete().addOnSuccessListener {
+                        MainViewModel.fetchFoliosData(user)
+                    }
                 }
                 else
                 {

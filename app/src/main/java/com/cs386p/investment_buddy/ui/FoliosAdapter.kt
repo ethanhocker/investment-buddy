@@ -46,8 +46,6 @@ class FoliosAdapter: ListAdapter<FoliosData,FoliosAdapter.VH>(FoliosDiff()) {
 
         binding.nameFolio.setOnClickListener(){
             Log.d("XXX Folios RV Clicked: ",binding.nameFolio.text.toString())
-            //TODO: Start new activity for Folio Dashboard
-
             val folioDashboardClass = FolioDashboard()
             val intent = Intent(holder.itemView.context, folioDashboardClass::class.java)
             intent.putExtra("folioName", binding.nameFolio.text.toString())
@@ -55,10 +53,9 @@ class FoliosAdapter: ListAdapter<FoliosData,FoliosAdapter.VH>(FoliosDiff()) {
         }
 
         binding.deleteFolioBTN.setOnClickListener(){
-            Log.d("XXX Folios RV Delete Icon Clicked: ",binding.nameFolio.text.toString())
-            //TODO: Call delete FakeFolio and data
-            val viewModel = MainViewModel()
-            viewModel.deleteFolios(user, binding.nameFolio.text.toString())
+            val folioName = binding.nameFolio.text.toString()
+            Log.d("XXX Folios RV Delete Icon Clicked: ", folioName)
+            MainViewModel.deleteFolios(user, folioName)
         }
     }
 

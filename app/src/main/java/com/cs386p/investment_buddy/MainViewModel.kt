@@ -32,11 +32,8 @@ class MainViewModel : ViewModel() {
 
     var holdingsDataList = MutableLiveData<MutableList<HoldingsData>>()
     var favoritesDataList = MutableLiveData<MutableList<FavoritesData>>()
-    var foliosDataList = MutableLiveData<MutableList<FoliosData>>()
 
     private var folioName = MutableLiveData<String>()
-
-    private val dbHelp = ViewModelDBHelper()
 
     fun signOut() {
         FirebaseAuth.getInstance().signOut()
@@ -89,10 +86,6 @@ class MainViewModel : ViewModel() {
         dbHelp.dbCreateTransaction(action)
     }
 
-    fun fetchFoliosData(uid: String){
-        dbHelp.dbFetchFolios(uid,foliosDataList)
-    }
-
     fun observeFoliosData(): MutableLiveData<MutableList<FoliosData>> {
         return foliosDataList
     }
@@ -108,11 +101,6 @@ class MainViewModel : ViewModel() {
 
     fun observeFolioName(): String{
         return folioName.value.toString()
-    }
-
-    fun deleteFolios(uid: String, folioName: String){
-        dbHelp.dbDeleteFolios(uid,folioName)
-        foliosDataList.postValue(mutableListOf())
     }
 
     fun fetchFavoritesData(uid: String){
@@ -136,6 +124,18 @@ class MainViewModel : ViewModel() {
 
     fun observeQuoteResults(): MutableLiveData<Quote>{
         return quoteResults
+    }
+
+    companion object{
+        var foliosDataList = MutableLiveData<MutableList<FoliosData>>()
+        private val dbHelp = ViewModelDBHelper()
+
+        fun deleteFolios(uid: String, folioName: String){
+            dbHelp.dbDeleteFolios(uid,folioName)
+        }
+        fun fetchFoliosData(uid: String){
+            dbHelp.dbFetchFolios(uid,foliosDataList)
+        }
     }
 
 }

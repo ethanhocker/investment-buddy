@@ -30,14 +30,12 @@ class Folios : AppCompatActivity() {
         val adapter = FoliosAdapter()
         binding.foliosRecyclerView.adapter = adapter
 
-        viewModel.fetchFoliosData(FirebaseAuth.getInstance().currentUser!!.uid)
+        MainViewModel.fetchFoliosData(FirebaseAuth.getInstance().currentUser!!.uid)
 
         viewModel.observeFoliosData().observe(this){
             println("\n\n***************** FOLIOS DATA CHANGED")
             val results = viewModel.observeFoliosData().value
-            println(results)
             adapter.submitList(results)
-            adapter.notifyDataSetChanged()
         }
 
         val fragmentManager = (this as AppCompatActivity).supportFragmentManager
@@ -49,7 +47,7 @@ class Folios : AppCompatActivity() {
             addFolioPopUp.show(fragmentManager,"Create New FakeFolio")
 
             addFolioPopUp.setOnDismissFunction{
-                viewModel.fetchFoliosData(FirebaseAuth.getInstance().currentUser!!.uid)
+                MainViewModel.fetchFoliosData(FirebaseAuth.getInstance().currentUser!!.uid)
             }
         }
     }
@@ -67,7 +65,7 @@ class Folios : AppCompatActivity() {
         return if (id == android.R.id.home) {
             // If user clicks "up", then it it as if they clicked OK.  We commit
             // changes and return to parent
-            finish()
+            doFinish()
             true
         } else super.onOptionsItemSelected(item)
     }
