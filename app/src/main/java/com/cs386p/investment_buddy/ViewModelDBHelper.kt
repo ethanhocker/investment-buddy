@@ -78,8 +78,6 @@ class ViewModelDBHelper() {
                 val temp = result.documents.mapNotNull {
                     Folioresults.add(it.toObject(FoliosData::class.java)!!)
                 }
-                println("\n\n*********************posting new folios List")
-                println(Folioresults)
                 foliosList.postValue(Folioresults)
             }
             .addOnFailureListener {

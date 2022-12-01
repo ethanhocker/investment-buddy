@@ -33,7 +33,6 @@ class Folios : AppCompatActivity() {
         MainViewModel.fetchFoliosData(FirebaseAuth.getInstance().currentUser!!.uid)
 
         viewModel.observeFoliosData().observe(this){
-            println("\n\n***************** FOLIOS DATA CHANGED")
             val results = viewModel.observeFoliosData().value
             adapter.submitList(results)
         }
