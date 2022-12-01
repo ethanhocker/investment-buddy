@@ -143,7 +143,6 @@ class MainActivity : AppCompatActivity() {
 
         // fetch favorites data from database and update adapter when favorites are changed
         if (UID != "Uninitialized") {
-            println("\n*********** fetching favorites...")
             viewModel.fetchFavoriteDataList(UID)
         }
         viewModel.observeFavoriteDataList().observe(this){
