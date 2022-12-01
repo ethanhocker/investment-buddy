@@ -57,5 +57,4 @@ class AddFoliosFragment : DialogFragment() {
         super.onDismiss(dialog)
     }
 
-
 }
