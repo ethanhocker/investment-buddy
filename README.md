@@ -3,7 +3,7 @@
 
 Name: Ethan Hocker and Michael Hallabrin
 
-Time: Ethan Hocker: 19 hours
+Time: Ethan Hocker: 26 hours
 Time: Michael Hallabrin: 20 hours
 
 Comments:

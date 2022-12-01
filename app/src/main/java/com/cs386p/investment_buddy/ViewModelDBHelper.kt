@@ -8,7 +8,7 @@ import com.google.firebase.firestore.Query
 import com.cs386p.investment_buddy.collections.HoldingsData
 import com.cs386p.investment_buddy.collections.TransactionsData
 import com.cs386p.investment_buddy.collections.FoliosData
-import com.cs386p.investment_buddy.collections.FavoritesData
+import com.cs386p.investment_buddy.collections.FavoriteData
 import com.cs386p.investment_buddy.ui.FoliosAdapter
 import okhttp3.internal.notifyAll
 
@@ -129,16 +129,17 @@ class ViewModelDBHelper() {
             }
     }
 
-    fun dbFetchFavorites(user: String, favoritesList: MutableLiveData<MutableList<FavoritesData>>){
-        val Favoritesresults = mutableListOf<FavoritesData>()
+    fun dbFetchFavorites(user: String, favoritesList: MutableLiveData<MutableList<FavoriteData>>){
+        val Favoritesresults = mutableListOf<FavoriteData>()
 
         db.collection(collectionFavorites).whereEqualTo("uid",user).get()
             .addOnSuccessListener { result ->
                 Log.d(javaClass.simpleName, "Favorites fetch ${result!!.documents.size}")
                 // NB: This is done on a background thread
                 val temp = result.documents.mapNotNull {
-                    Favoritesresults.add(it.toObject(FavoritesData::class.java)!!)
+                    Favoritesresults.add(it.toObject(FavoriteData::class.java)!!)
                 }
+                println("\n\n db fetch results favorites list length: " + temp.size)
                 favoritesList.postValue(Favoritesresults)
             }
             .addOnFailureListener {
@@ -146,7 +147,7 @@ class ViewModelDBHelper() {
             }
     }
 
-    fun dbUpdateFavorites(fav: FavoritesData){
+    fun dbUpdateFavorites(fav: FavoriteData){
         db.collection(collectionFavorites).whereEqualTo("uid",fav.uid).whereEqualTo("stock_ticker",fav.stock_ticker).get()
             .addOnSuccessListener { result ->
                 Log.d(javaClass.simpleName, "Favorites Update fetch ${result!!.documents.size}")

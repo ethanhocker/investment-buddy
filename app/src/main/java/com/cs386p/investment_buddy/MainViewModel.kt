@@ -7,15 +7,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cs386p.investment_buddy.api.*
-
-import com.cs386p.investment_buddy.collections.HoldingsData
-import com.cs386p.investment_buddy.collections.TransactionsData
-import com.cs386p.investment_buddy.collections.FoliosData
-import com.cs386p.investment_buddy.collections.FavoritesData
+import com.cs386p.investment_buddy.collections.*
 
 import kotlinx.coroutines.launch
 
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.CoroutineStart
 
 class MainViewModel : ViewModel() {
     private val alphaVantagAPI = AlphaVantageAPI.create()
@@ -24,11 +21,12 @@ class MainViewModel : ViewModel() {
     private val searchResults = MutableLiveData<MutableList<SearchedStock>?>()
     private val alphaQuoteResults = MutableLiveData<AlphaQuote>()
     private val finnhubQuoteResults = MutableLiveData<FinnhubQuote>()
+    private val favoriteQuote = MutableLiveData<FinnhubQuote>()
 
     private var UID = MutableLiveData("Uninitialized")
 
     var holdingsDataList = MutableLiveData<MutableList<HoldingsData>>()
-    var favoritesDataList = MutableLiveData<MutableList<FavoritesData>>()
+    var favoriteDataList = MutableLiveData<MutableList<FavoriteData>>()
 
     private var folioName = MutableLiveData<String>()
 
@@ -43,7 +41,7 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun observeUUID() : LiveData<String>{
+    fun observeUID() : LiveData<String>{
         return UID
     }
 
@@ -102,15 +100,15 @@ class MainViewModel : ViewModel() {
         return folioName.value.toString()
     }
 
-    fun fetchFavoritesData(uid: String){
-        dbHelp.dbFetchFavorites(uid,favoritesDataList)
+    fun fetchFavoriteDataList(uid: String){
+        dbHelp.dbFetchFavorites(uid, favoriteDataList)
     }
 
-    fun observeFavoritesData(): MutableLiveData<MutableList<FavoritesData>> {
-        return favoritesDataList
+    fun observeFavoriteDataList(): MutableLiveData<MutableList<FavoriteData>> {
+        return favoriteDataList
     }
 
-    fun updateFavorites(fav: FavoritesData) {
+    fun updateFavorites(fav: FavoriteData) {
         Log.d("Updating User Folios: ","MVM")
         dbHelp.dbUpdateFavorites(fav)
     }
@@ -122,6 +120,19 @@ class MainViewModel : ViewModel() {
 
     fun observeAlphaQuoteResults(): MutableLiveData<AlphaQuote>{
         return alphaQuoteResults
+    }
+
+    fun finnhubQuoteRequestFavorite(symbol: String, mainActivity: MainActivity) {
+        println("launched request for single stock quote")
+        viewModelScope.launch (start = CoroutineStart.ATOMIC) {
+            val result = stockRepository.finnhubQuoteRequest(symbol)
+            favoriteQuote.postValue(result)
+            mainActivity.addFavoriteQuote(result)
+        }
+    }
+
+    fun observeQuoteRequestFavorite(): MutableLiveData<FinnhubQuote>{
+        return favoriteQuote
     }
 
     fun finnhubQuoteRequest(symbol: String) = viewModelScope.launch {
