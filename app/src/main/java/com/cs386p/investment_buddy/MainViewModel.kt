@@ -28,7 +28,6 @@ class MainViewModel : ViewModel() {
     private var UID = MutableLiveData("Uninitialized")
 
     var holdingsDataList = MutableLiveData<MutableList<HoldingsData>>()
-    var favoritesDataList = MutableLiveData<MutableList<FavoritesData>>()
 
     private var folioName = MutableLiveData<String>()
 
@@ -102,10 +101,6 @@ class MainViewModel : ViewModel() {
         return folioName.value.toString()
     }
 
-    fun fetchFavoritesData(uid: String){
-        dbHelp.dbFetchFavorites(uid,favoritesDataList)
-    }
-
     fun observeFavoritesData(): MutableLiveData<MutableList<FavoritesData>> {
         return favoritesDataList
     }
@@ -135,6 +130,7 @@ class MainViewModel : ViewModel() {
 
     companion object{
         var foliosDataList = MutableLiveData<MutableList<FoliosData>>()
+        var favoritesDataList = MutableLiveData<MutableList<FavoritesData>>()
         private val dbHelp = ViewModelDBHelper()
 
         fun deleteFolios(uid: String, folioName: String){
@@ -143,5 +139,10 @@ class MainViewModel : ViewModel() {
         fun fetchFoliosData(uid: String){
             dbHelp.dbFetchFolios(uid,foliosDataList)
         }
+
+        fun fetchFavoritesData(uid: String){
+            dbHelp.dbFetchFavorites(uid,favoritesDataList)
+        }
+
     }
 }

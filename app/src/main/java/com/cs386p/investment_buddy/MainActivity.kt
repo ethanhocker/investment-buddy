@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
 
         AuthInit(viewModel, signInLauncher)
 
-        viewModel.fetchFavoritesData(UID)
+        MainViewModel.fetchFavoritesData(UID)
 
         viewModel.observeFavoritesData().observe(this){
 

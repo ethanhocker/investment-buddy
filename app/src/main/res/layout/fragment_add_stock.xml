@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context=".ui.AddStockFragment"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/msgTV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Select Folio and Amount of Stock to Purchase"
+        android:textSize="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/dropDownLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_margin="20dp"
+        app:layout_constraintTop_toBottomOf="@id/msgTV"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <AutoCompleteTextView
+            android:id="@+id/fakeFolioDropDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:text="Select FakeFolio"
+            android:textSize="16dp"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/selectOptionTV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Please Select One of the Options Below"
+        android:layout_marginTop="20dp"
+        android:textSize="16dp"
+        app:layout_constraintTop_toBottomOf="@id/dropDownLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/selectOptionTV"
+        app:layout_constraintStart_toStartOf="parent"
+        >
+        <RadioButton
+            android:id="@+id/radioBTN1"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Dollars" />
+
+        <RadioButton
+            android:id="@+id/radioBTN2"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Shares" />
+
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/amountET"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="12,345.67"
+        android:textSize="14dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <Button
+        android:id="@+id/confirmFolioBTN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Confirm"
+        android:textSize="14dp"
+        android:textColor="#000000"
+        android:backgroundTint="#4CAF50"
+        app:layout_constraintTop_toBottomOf="@+id/amountET"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

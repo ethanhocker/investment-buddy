@@ -153,12 +153,16 @@ class ViewModelDBHelper() {
                 // NB: This is done on a background thread
                 if(result!!.documents.size > 0)
                 {
-                    db.collection(collectionFavorites).document(result.documents[0].id).delete()
+                    db.collection(collectionFavorites).document(result.documents[0].id).delete().addOnSuccessListener {
+                        MainViewModel.fetchFavoritesData(fav.uid)
+                    }
                 }
                 else
                 {
                     fav.firestoreID = db.collection(collectionFavorites).document().id
-                    db.collection(collectionFavorites).document(fav.firestoreID).set(fav)
+                    db.collection(collectionFavorites).document(fav.firestoreID).set(fav).addOnSuccessListener {
+                        MainViewModel.fetchFavoritesData(fav.uid)
+                    }
                 }
 
             }
