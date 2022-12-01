@@ -9,6 +9,8 @@ import com.cs386p.investment_buddy.collections.HoldingsData
 import com.cs386p.investment_buddy.collections.TransactionsData
 import com.cs386p.investment_buddy.collections.FoliosData
 import com.cs386p.investment_buddy.collections.FavoritesData
+import com.cs386p.investment_buddy.ui.FoliosAdapter
+import okhttp3.internal.notifyAll
 
 class ViewModelDBHelper() {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -17,15 +19,17 @@ class ViewModelDBHelper() {
     private val collectionFolios = "Folios"
     private val collectionFavorites = "Favorites"
 
-    fun dbFetchHoldings(user: String, holdingsList: MutableLiveData<List<HoldingsData>>){
-        db.collection(collectionHoldings).whereEqualTo("uid",user).orderBy("stock_ticker", Query.Direction.ASCENDING).get()
+    fun dbFetchHoldings(user: String, holdingsList: MutableLiveData<MutableList<HoldingsData>>){
+        val Holdingsresults = mutableListOf<HoldingsData>()
+
+        db.collection(collectionHoldings).whereEqualTo("uid",user).get()
             .addOnSuccessListener { result ->
                 Log.d(javaClass.simpleName, "Holdings fetch ${result!!.documents.size}")
                 // NB: This is done on a background thread
                 val temp = result.documents.mapNotNull {
-                    it.toObject(HoldingsData::class.java)
+                    Holdingsresults.add(it.toObject(HoldingsData::class.java)!!)
                 }
-                holdingsList.postValue(temp)
+                holdingsList.postValue(Holdingsresults)
             }
             .addOnFailureListener {
                 Log.d(javaClass.simpleName, "Holdings fetch FAILED ", it)
@@ -64,15 +68,17 @@ class ViewModelDBHelper() {
         db.collection(collectionTransactions).document(action.firestoreID).set(action)
     }
 
-    fun dbFetchFolios(user: String, foliosList: MutableLiveData<List<FoliosData>>){
+    fun dbFetchFolios(user: String, foliosList: MutableLiveData<MutableList<FoliosData>>){
+        val Folioresults = mutableListOf<FoliosData>()
+
         db.collection(collectionFolios).whereEqualTo("uid",user).get()
             .addOnSuccessListener { result ->
                 Log.d(javaClass.simpleName, "Folios fetch ${result!!.documents.size}")
                 // NB: This is done on a background thread
                 val temp = result.documents.mapNotNull {
-                    it.toObject(FoliosData::class.java)
+                    Folioresults.add(it.toObject(FoliosData::class.java)!!)
                 }
-                foliosList.postValue(temp)
+                foliosList.postValue(Folioresults)
             }
             .addOnFailureListener {
                 Log.d(javaClass.simpleName, "Folios fetch FAILED ", it)
@@ -91,7 +97,9 @@ class ViewModelDBHelper() {
                 else
                 {
                     folio.firestoreID = db.collection(collectionFolios).document().id
-                    db.collection(collectionFolios).document(folio.firestoreID).set(folio)
+                    db.collection(collectionFolios).document(folio.firestoreID).set(folio).addOnSuccessListener {
+                        MainViewModel.fetchFoliosData(folio.uid)
+                    }
                 }
 
             }
@@ -100,15 +108,38 @@ class ViewModelDBHelper() {
             }
     }
 
-    fun dbFetchFavorites(user: String, favoritesList: MutableLiveData<List<FavoritesData>>){
+    fun dbDeleteFolios(user: String, folioName: String){
+        db.collection(collectionFolios).whereEqualTo("uid",user).whereEqualTo("name",folioName).get()
+            .addOnSuccessListener { result ->
+                Log.d(javaClass.simpleName, "Folios Update fetch ${result!!.documents.size}")
+                // NB: This is done on a background thread
+                if(result!!.documents.size > 0)
+                {
+                    db.collection(collectionFolios).document(result.documents[0].id).delete().addOnSuccessListener {
+                        MainViewModel.fetchFoliosData(user)
+                    }
+                }
+                else
+                {
+
+                }
+            }
+            .addOnFailureListener {
+                Log.d(javaClass.simpleName, "Folios Update fetch FAILED ", it)
+            }
+    }
+
+    fun dbFetchFavorites(user: String, favoritesList: MutableLiveData<MutableList<FavoritesData>>){
+        val Favoritesresults = mutableListOf<FavoritesData>()
+
         db.collection(collectionFavorites).whereEqualTo("uid",user).get()
             .addOnSuccessListener { result ->
                 Log.d(javaClass.simpleName, "Favorites fetch ${result!!.documents.size}")
                 // NB: This is done on a background thread
                 val temp = result.documents.mapNotNull {
-                    it.toObject(FavoritesData::class.java)
+                    Favoritesresults.add(it.toObject(FavoritesData::class.java)!!)
                 }
-                favoritesList.postValue(temp)
+                favoritesList.postValue(Favoritesresults)
             }
             .addOnFailureListener {
                 Log.d(javaClass.simpleName, "Favorites fetch FAILED ", it)

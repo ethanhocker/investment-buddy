@@ -2,65 +2,56 @@ package com.cs386p.investment_buddy.ui
 
 import android.graphics.Color
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.cs386p.investment_buddy.R
 import com.cs386p.investment_buddy.collections.FavoritesData
+import com.cs386p.investment_buddy.databinding.FavoritesRowBinding
 
-class FavoritesAdapter(private val FavList: List<FavoritesData>) : RecyclerView.Adapter<FavoritesAdapter.ViewHolder>() {
+class FavoritesAdapter: ListAdapter<FavoritesData,FavoritesAdapter.VH>(FavoritesDiff()) {
+    class FavoritesDiff : DiffUtil.ItemCallback<FavoritesData>() {
+        override fun areItemsTheSame(oldItem: FavoritesData, newItem: FavoritesData): Boolean {
+            return oldItem.stock_ticker == newItem.stock_ticker
+        }
 
-    // create new views
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        // inflates the card_view_design view
-        // that is used to hold list item
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.favorites_row, parent, false)
-
-        return ViewHolder(view)
+        // TODO: This can be expanded for completeness if more fields are determined to be relevant
+        override fun areContentsTheSame(oldItem: FavoritesData, newItem: FavoritesData): Boolean {
+            return oldItem.stock_ticker == newItem.stock_ticker
+        }
     }
 
-    // binds the list items to a view
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    inner class VH(val binding: FavoritesRowBinding)
+        : RecyclerView.ViewHolder(binding.root)
 
-        val FavItem = FavList[position]
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+        val favoritesRowBinding = FavoritesRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return VH(favoritesRowBinding)
+    }
+
+    override fun onBindViewHolder(holder: VH, position: Int) {
+        val binding = holder.binding
 
         // sets the text to the textview from our itemHolder class
-        holder.tickerText.text = FavItem.stock_ticker
-        holder.stockNameText.text = FavItem.stock_name
-        holder.changePercentText.text = "+69.0"
-        holder.changeText.text = "+2.69"
+        binding.tickerFav.text = currentList[position].stock_ticker
+        binding.stockNameFav.text = currentList[position].stock_name
+        binding.changePercentFav.text = "+69.0"
+        binding.changeFav.text = "+2.69"
 
-        if(holder.changePercentText.text.toString().toDouble() > 0)
+        if(binding.changePercentFav.text.toString().toDouble() > 0)
         {
-            holder.changePercentText.setTextColor(Color.GREEN)
-            holder.unitText.setTextColor(Color.GREEN)
+            binding.changePercentFav.setTextColor(Color.GREEN)
+            binding.unitFav.setTextColor(Color.GREEN)
         }
-        else if (holder.changePercentText.text.toString().toDouble() < 0)
+        else if (binding.changePercentFav.text.toString().toDouble() < 0)
         {
-            holder.changePercentText.setTextColor(Color.RED)
-            holder.unitText.setTextColor(Color.RED)
+            binding.changePercentFav.setTextColor(Color.RED)
+            binding.unitFav.setTextColor(Color.RED)
         }
         else
         {
-            holder.changePercentText.setTextColor(Color.WHITE)
-            holder.unitText.setTextColor(Color.WHITE)
+            binding.changePercentFav.setTextColor(Color.WHITE)
+            binding.unitFav.setTextColor(Color.WHITE)
         }
-
-    }
-
-    // return the number of the items in the list
-    override fun getItemCount(): Int {
-        return FavList.size
-    }
-
-    // Holds the views for adding it to image and text
-    class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
-        val tickerText: TextView = itemView.findViewById(R.id.tickerFav)
-        val stockNameText: TextView = itemView.findViewById(R.id.stockNameFav)
-        val changePercentText: TextView = itemView.findViewById(R.id.changePercentFav)
-        val unitText: TextView = itemView.findViewById(R.id.unitFav)
-        val changeText: TextView = itemView.findViewById(R.id.changeFav)
     }
 }

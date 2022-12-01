@@ -27,11 +27,10 @@ class MainViewModel : ViewModel() {
 
     private var UID = MutableLiveData("Uninitialized")
 
-    var holdingsDataList = MutableLiveData<List<HoldingsData>>()
-    var favoritesDataList = MutableLiveData<List<FavoritesData>>()
-    var foliosDataList = MutableLiveData<List<FoliosData>>()
+    var holdingsDataList = MutableLiveData<MutableList<HoldingsData>>()
+    var favoritesDataList = MutableLiveData<MutableList<FavoritesData>>()
 
-    private val dbHelp = ViewModelDBHelper()
+    private var folioName = MutableLiveData<String>()
 
     fun signOut() {
         FirebaseAuth.getInstance().signOut()
@@ -73,7 +72,7 @@ class MainViewModel : ViewModel() {
         dbHelp.dbFetchHoldings(uid, holdingsDataList)
     }
 
-    fun observeHoldingsData(): LiveData<List<HoldingsData>> {
+    fun observeHoldingsData(): MutableLiveData<MutableList<HoldingsData>> {
         return holdingsDataList
     }
 
@@ -86,11 +85,7 @@ class MainViewModel : ViewModel() {
         dbHelp.dbCreateTransaction(action)
     }
 
-    fun fetchFoliosData(uid: String){
-        dbHelp.dbFetchFolios(uid,foliosDataList)
-    }
-
-    fun observeFoliosData(): LiveData<List<FoliosData>> {
+    fun observeFoliosData(): MutableLiveData<MutableList<FoliosData>> {
         return foliosDataList
     }
 
@@ -99,11 +94,19 @@ class MainViewModel : ViewModel() {
         dbHelp.dbUpdateFolios(folio)
     }
 
-    fun fetchFavoritesData(uuid: String){
-        dbHelp.dbFetchFavorites(uuid,favoritesDataList)
+    fun updateFolioName(name: String){
+        folioName.postValue(name)
     }
 
-    fun observeFavoritesData(): LiveData<List<FavoritesData>> {
+    fun observeFolioName(): String{
+        return folioName.value.toString()
+    }
+
+    fun fetchFavoritesData(uid: String){
+        dbHelp.dbFetchFavorites(uid,favoritesDataList)
+    }
+
+    fun observeFavoritesData(): MutableLiveData<MutableList<FavoritesData>> {
         return favoritesDataList
     }
 
@@ -128,5 +131,17 @@ class MainViewModel : ViewModel() {
 
     fun observeFinnhubQuoteResults(): MutableLiveData<FinnhubQuote>{
         return finnhubQuoteResults
+    }
+
+    companion object{
+        var foliosDataList = MutableLiveData<MutableList<FoliosData>>()
+        private val dbHelp = ViewModelDBHelper()
+
+        fun deleteFolios(uid: String, folioName: String){
+            dbHelp.dbDeleteFolios(uid,folioName)
+        }
+        fun fetchFoliosData(uid: String){
+            dbHelp.dbFetchFolios(uid,foliosDataList)
+        }
     }
 }

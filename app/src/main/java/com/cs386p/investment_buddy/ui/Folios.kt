@@ -1,10 +1,12 @@
 package com.cs386p.investment_buddy.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.cs386p.investment_buddy.MainActivity
 import com.cs386p.investment_buddy.MainViewModel
 import com.cs386p.investment_buddy.databinding.ActivityFoliosBinding
 import com.cs386p.investment_buddy.databinding.ContentFoliosBinding
@@ -23,11 +25,29 @@ class Folios : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        viewModel.fetchFoliosData(FirebaseAuth.getInstance().currentUser!!.uid)
+        val layoutManager = LinearLayoutManager(this)
+        binding.foliosRecyclerView.layoutManager = layoutManager
+        val adapter = FoliosAdapter()
+        binding.foliosRecyclerView.adapter = adapter
+
+        MainViewModel.fetchFoliosData(FirebaseAuth.getInstance().currentUser!!.uid)
 
         viewModel.observeFoliosData().observe(this){
-            binding.foliosRecyclerView.layoutManager = LinearLayoutManager(this)
-            binding.foliosRecyclerView.adapter = FoliosAdapter(it)
+            val results = viewModel.observeFoliosData().value
+            adapter.submitList(results)
+        }
+
+        val fragmentManager = (this as AppCompatActivity).supportFragmentManager
+        binding.addFoliosBTN.setOnClickListener(){
+            Log.d("XXX Folios: ","Add Button Clicked")
+            //TODO: possibly a popup to enter FakeFolio name and starting balance
+
+            val addFolioPopUp = AddFoliosFragment()
+            addFolioPopUp.show(fragmentManager,"Create New FakeFolio")
+
+            addFolioPopUp.setOnDismissFunction{
+                MainViewModel.fetchFoliosData(FirebaseAuth.getInstance().currentUser!!.uid)
+            }
         }
     }
 
@@ -44,7 +64,7 @@ class Folios : AppCompatActivity() {
         return if (id == android.R.id.home) {
             // If user clicks "up", then it it as if they clicked OK.  We commit
             // changes and return to parent
-            finish()
+            doFinish()
             true
         } else super.onOptionsItemSelected(item)
     }
