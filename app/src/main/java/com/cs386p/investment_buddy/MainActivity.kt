@@ -23,7 +23,6 @@ import com.cs386p.investment_buddy.ui.Folios
 import com.cs386p.investment_buddy.ui.StockSearch
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 
-
 class MainActivity : AppCompatActivity() {
     val api_key = "RUXI1LX1OCUM137J" // TODO: Move this, just noting this here for now
     private val viewModel: MainViewModel by viewModels()

@@ -11,3 +11,4 @@ Comments:
 *  This Stack Overflow post showed how to define an OnFocusChangeListener for an editText view in Kotlin: https://stackoverflow.com/questions/7397391/event-for-handling-the-focus-of-the-edittext
 *  This Stack Overflow post showed how to define setOnDismissFunction for dialog fragment: https://stackoverflow.com/questions/73524061/kotlin-dialog-on-dismiss-listener
 *  The top response from this Stack Overflow post showed how to create a popup window and lots of the posted snipped was used: https://stackoverflow.com/questions/5944987/how-to-create-a-popup-window-popupwindow-in-android 
+*  This Programiz arcticle gave me the code to format the current date: https://www.programiz.com/kotlin-programming/examples/current-date-time

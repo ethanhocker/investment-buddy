@@ -22,6 +22,8 @@ class MainViewModel : ViewModel() {
     private val alphaQuoteResults = MutableLiveData<AlphaQuote>()
     private val finnhubQuoteResults = MutableLiveData<FinnhubQuote>()
     private val favoriteQuote = MutableLiveData<FinnhubQuote>()
+    private val finnhubInsiderSentimentResults = MutableLiveData<MutableList<InsiderSentiment>>()
+    private val finnhubBasicFinancialsResults = MutableLiveData<MetricData>()
 
     private var UID = MutableLiveData("Uninitialized")
 
@@ -142,6 +144,26 @@ class MainViewModel : ViewModel() {
 
     fun observeFinnhubQuoteResults(): MutableLiveData<FinnhubQuote>{
         return finnhubQuoteResults
+    }
+
+    fun finnhubInsiderSentimentRequest(symbol: String, date: String) = viewModelScope.launch {
+        val result = stockRepository.finnhubInsiderSentimentRequest(symbol, date)
+        println("result from repository: " + result)
+        println("result from repository size: " + result.size)
+        finnhubInsiderSentimentResults.postValue(result as MutableList<InsiderSentiment>?)
+    }
+
+    fun observeFinnhubInsiderSentimentRestults(): MutableLiveData<MutableList<InsiderSentiment>>{
+        return finnhubInsiderSentimentResults
+    }
+
+    fun finnhubBasicFinancialsRequest(symbol: String) = viewModelScope.launch {
+        val result = stockRepository.finnhubBasicFinancialsRequest(symbol)
+        finnhubBasicFinancialsResults.postValue(result)
+    }
+
+    fun observeBasicFinancials(): MutableLiveData<MetricData>{
+        return finnhubBasicFinancialsResults
     }
 
     companion object{
