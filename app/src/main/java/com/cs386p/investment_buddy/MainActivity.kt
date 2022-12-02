@@ -1,7 +1,5 @@
 package com.cs386p.investment_buddy
 
-//TODO Remove unused imports after moving unused functions
-
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
@@ -34,7 +32,21 @@ class MainActivity : AppCompatActivity() {
         }
 
     private val localFavoriteDataList = mutableListOf<FavoriteData>()
+    private var secondLaunch = false
     val adapter = FavoritesAdapter()
+
+    // when activity is resumed refetch favorites
+    override fun onResume() {
+        super.onResume()
+        // don't refetch favorites if activity is launched for the first time
+        if (!secondLaunch){
+            secondLaunch = true
+        }
+        else {
+            localFavoriteDataList.clear()
+            viewModel.fetchFavoriteDataList(UID)
+        }
+    }
 
     @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -138,13 +150,24 @@ class MainActivity : AppCompatActivity() {
 
         // fetch favorites data from database and update adapter when favorites are changed
         if (UID != "Uninitialized") {
-            viewModel.fetchFavoriteDataList(UID)
+            viewModel .fetchFavoriteDataList(UID)
         }
         viewModel.observeFavoriteDataList().observe(this) {
             val results = viewModel.observeFavoriteDataList().value
             if (results != null) {
-                for (result in results) {
-                    viewModel.finnhubQuoteRequestFavorite(result.stock_ticker, this)
+                // if there are favorites, request quote for each favorite symbol
+                if (results.size > 0) {
+                    for (result in results) {
+                        viewModel.finnhubQuoteRequestFavorite(result.stock_ticker, this)
+                    }
+                }
+                // else clear favorites list
+                else{
+                    // submit local favoriteDataList to adapter and notify of change
+                    localFavoriteDataList.clear()
+                    adapter.submitList(localFavoriteDataList)
+                    adapter.notifyDataSetChanged()
+
                 }
             }
         }
