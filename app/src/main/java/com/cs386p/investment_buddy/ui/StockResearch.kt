@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import com.cs386p.investment_buddy.MainViewModel
 import com.cs386p.investment_buddy.api.Repository
-import com.cs386p.investment_buddy.collections.FavoritesData
+import com.cs386p.investment_buddy.collections.FavoriteData
 import com.cs386p.investment_buddy.databinding.ActivityResearchBinding
 import com.cs386p.investment_buddy.databinding.ContentResearchBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -29,7 +29,7 @@ class StockResearch : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val user = FirebaseAuth.getInstance().currentUser!!.uid
-        var favoritesList = viewModel.observeFavoritesData()
+        var favoritesList = viewModel.observeFavoriteDataList().value
 
         // grab values from intent
         val symbol = intent.getStringExtra("symbol").toString()
@@ -37,7 +37,9 @@ class StockResearch : AppCompatActivity() {
         // set title stock name
         binding.stockName.text = stockName
 
-        checkFavList(stockName, favoritesList)
+        if (favoritesList != null) {
+            checkFavList(stockName, favoritesList)
+        }
 
         // observe quote results and update text on change
         viewModel.observeFinnhubQuoteResults().observe(this){
@@ -63,17 +65,16 @@ class StockResearch : AppCompatActivity() {
         }
 
         binding.favoriteButton.setOnClickListener(){
-            var fav = FavoritesData(
+            var fav = FavoriteData(
                 uid = user,
                 stock_ticker = symbol,
                 stock_name = stockName,
-
             )
 
             viewModel.updateFavorites(fav)
             //TODO figure out how to update this live
-            favoritesList = viewModel.observeFavoritesData()
-            checkFavList(stockName, favoritesList)
+            favoritesList = viewModel.observeFavoriteDataList().value
+            favoritesList?.let { it1 -> checkFavList(stockName, it1) }
         }
     }
 
@@ -82,8 +83,8 @@ class StockResearch : AppCompatActivity() {
         finish()
     }
 
-    private fun checkFavList(stockName: String, favoritesList: MutableLiveData<MutableList<FavoritesData>>){
-        for(fav in favoritesList.value!!){
+    private fun checkFavList(stockName: String, favoritesList: MutableList<FavoriteData>){
+        for(fav in favoritesList!!){
             if(stockName == fav.stock_name)
             {
                 binding.favoriteButton.text = "UNFAVORITE"

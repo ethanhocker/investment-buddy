@@ -16,5 +16,6 @@ data class FinnhubQuote (
     @SerializedName("o")
     val open: String,
     @SerializedName("pc")
-    val previousClose: String
+    val previousClose: String,
+    var symbol: String
 )

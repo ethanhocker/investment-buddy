@@ -6,17 +6,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.cs386p.investment_buddy.collections.FavoritesData
+import com.cs386p.investment_buddy.collections.FavoriteData
 import com.cs386p.investment_buddy.databinding.FavoritesRowBinding
 
-class FavoritesAdapter: ListAdapter<FavoritesData,FavoritesAdapter.VH>(FavoritesDiff()) {
-    class FavoritesDiff : DiffUtil.ItemCallback<FavoritesData>() {
-        override fun areItemsTheSame(oldItem: FavoritesData, newItem: FavoritesData): Boolean {
+class FavoritesAdapter: ListAdapter<FavoriteData,FavoritesAdapter.VH>(FavoritesDiff()) {
+    class FavoritesDiff : DiffUtil.ItemCallback<FavoriteData>() {
+        override fun areItemsTheSame(oldItem: FavoriteData, newItem: FavoriteData): Boolean {
             return oldItem.stock_ticker == newItem.stock_ticker
         }
 
         // TODO: This can be expanded for completeness if more fields are determined to be relevant
-        override fun areContentsTheSame(oldItem: FavoritesData, newItem: FavoritesData): Boolean {
+        override fun areContentsTheSame(oldItem: FavoriteData, newItem: FavoriteData): Boolean {
             return oldItem.stock_ticker == newItem.stock_ticker
         }
     }
@@ -34,16 +34,29 @@ class FavoritesAdapter: ListAdapter<FavoritesData,FavoritesAdapter.VH>(Favorites
 
         // sets the text to the textview from our itemHolder class
         binding.tickerFav.text = currentList[position].stock_ticker
-        binding.stockNameFav.text = currentList[position].stock_name
-        binding.changePercentFav.text = "+69.0"
-        binding.changeFav.text = "+2.69"
+        var stockName = currentList[position].stock_name
+        if (stockName.length > 40){
+            stockName = stockName.substring(0, 39).trim() + "..."
+            binding.stockNameFav.text = stockName
+        }
+        else{
+            binding.stockNameFav.text = stockName
+        }
+        var percentChange = currentList[position].dailyChange
+        binding.changePercentFav.text = percentChange
+        var cost = currentList[position].cost
+        if (cost != "0") {
+            binding.changeFav.text = "$ $cost"
+        }
 
-        if(binding.changePercentFav.text.toString().toDouble() > 0)
-        {
+        // set percent change text styling based on value
+        if (percentChange != null && percentChange.toDouble() > 0){
+            percentChange = "+$percentChange"
+            binding.changePercentFav.text = percentChange
             binding.changePercentFav.setTextColor(Color.GREEN)
             binding.unitFav.setTextColor(Color.GREEN)
         }
-        else if (binding.changePercentFav.text.toString().toDouble() < 0)
+        else if (percentChange != null && percentChange.toDouble() < 0)
         {
             binding.changePercentFav.setTextColor(Color.RED)
             binding.unitFav.setTextColor(Color.RED)
