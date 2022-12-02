@@ -139,7 +139,7 @@ class MainViewModel : ViewModel() {
 
     fun finnhubQuoteRequest(symbol: String) = viewModelScope.launch {
         val result = stockRepository.finnhubQuoteRequest(symbol)
-        finnhubQuoteResults.postValue(result)
+        finnhubQuoteResults.setValue(result)
     }
 
     fun observeFinnhubQuoteResults(): MutableLiveData<FinnhubQuote>{
