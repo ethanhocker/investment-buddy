@@ -11,10 +11,7 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.commitNow
-import androidx.lifecycle.MutableLiveData
 import com.cs386p.investment_buddy.MainViewModel
-import com.cs386p.investment_buddy.api.Repository
 import com.cs386p.investment_buddy.collections.FavoriteData
 import com.cs386p.investment_buddy.databinding.ActivityResearchBinding
 import com.cs386p.investment_buddy.databinding.ContentResearchBinding
@@ -24,8 +21,8 @@ import java.time.format.DateTimeFormatter
 
 class StockResearch : AppCompatActivity() {
     private lateinit var binding : ContentResearchBinding
-    // initialize viewModel
     private val viewModel: MainViewModel by viewModels()
+    private var localFavoritesDataList = mutableListOf<FavoriteData>()
 
     @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +36,6 @@ class StockResearch : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val user = FirebaseAuth.getInstance().currentUser!!.uid
-        var favoritesList = viewModel.observeFavoriteDataList().value
 
         // grab values from intent
         val symbol = intent.getStringExtra("symbol").toString()
@@ -48,8 +44,16 @@ class StockResearch : AppCompatActivity() {
         // set title stock name
         binding.stockName.text = stockName
 
-        if (favoritesList != null) {
-            checkFavList(stockName, favoritesList)
+        MainViewModel.fetchFavoritesData(FirebaseAuth.getInstance().currentUser!!.uid)
+
+        viewModel.observeFavoriteDataList().observe(this) {
+            var favoritesDataList = viewModel.observeFavoriteDataList().value
+            if (favoritesDataList != null) {
+                for (favoritesData in favoritesDataList){
+                    checkFavList(stockName, favoritesDataList)
+                    localFavoritesDataList.add(favoritesData)
+                }
+            }
         }
 
         // add popup for analyzing stocks info
@@ -171,7 +175,6 @@ class StockResearch : AppCompatActivity() {
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
             val formatted = current.format(formatter)
             viewModel.finnhubInsiderSentimentRequest(symbol, formatted)
-
             viewModel.finnhubBasicFinancialsRequest(symbol)
         }
 
@@ -183,7 +186,6 @@ class StockResearch : AppCompatActivity() {
             args.putString("symbol", symbol)
             args.putString("stockName", stockName)
             args.putString("currentPrice",currentPrice)
-
             addFolioPopUp.arguments = args
 
             addFolioPopUp.show(fragmentManager,"Purchase Stock")
@@ -196,10 +198,20 @@ class StockResearch : AppCompatActivity() {
                 stock_name = stockName,
             )
 
+            if(binding.favoriteButton.text == "FAVORITE")
+            {
+                binding.favoriteButton.text = "UNFAVORITE"
+            }
+            else if(binding.favoriteButton.text == "UNFAVORITE")
+            {
+                binding.favoriteButton.text = "FAVORITE"
+            }
+
             viewModel.updateFavorites(fav)
             //TODO figure out how to update this live
-            favoritesList = viewModel.observeFavoriteDataList().value
-            favoritesList?.let { it1 -> checkFavList(stockName, it1) }
+            /*favoritesList = viewModel.observeFavoriteDataList().value
+            favoritesList?.let { it1 -> checkFavList(stockName, it1) }*/
+
         }
     }
 

@@ -3,14 +3,11 @@ package com.cs386p.investment_buddy
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 
 import com.cs386p.investment_buddy.collections.HoldingsData
 import com.cs386p.investment_buddy.collections.TransactionsData
 import com.cs386p.investment_buddy.collections.FoliosData
 import com.cs386p.investment_buddy.collections.FavoriteData
-import com.cs386p.investment_buddy.ui.FoliosAdapter
-import okhttp3.internal.notifyAll
 
 class ViewModelDBHelper() {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -26,7 +23,7 @@ class ViewModelDBHelper() {
             .addOnSuccessListener { result ->
                 Log.d(javaClass.simpleName, "Holdings fetch ${result!!.documents.size}")
                 // NB: This is done on a background thread
-                val temp = result.documents.mapNotNull {
+                result.documents.mapNotNull {
                     Holdingsresults.add(it.toObject(HoldingsData::class.java)!!)
                 }
                 holdingsList.postValue(Holdingsresults)
@@ -37,7 +34,6 @@ class ViewModelDBHelper() {
     }
 
     fun dbUpdateHoldings(holding: HoldingsData){
-
         db.collection(collectionHoldings).whereEqualTo("uid",holding.uid).whereEqualTo("stock_ticker",holding.stock_ticker).whereEqualTo("port_num",holding.port_num).get()
             .addOnSuccessListener { result ->
                 Log.d(javaClass.simpleName, "Holdings Update fetch ${result!!.documents.size}")
@@ -62,11 +58,6 @@ class ViewModelDBHelper() {
             .addOnFailureListener {
                 Log.d(javaClass.simpleName, "Holdings Update fetch FAILED ", it)
             }
-
-    }
-
-    fun dbFetchTransactions(){
-
     }
 
     fun dbCreateTransaction(action: TransactionsData){
@@ -81,7 +72,7 @@ class ViewModelDBHelper() {
             .addOnSuccessListener { result ->
                 Log.d(javaClass.simpleName, "Folios fetch ${result!!.documents.size}")
                 // NB: This is done on a background thread
-                val temp = result.documents.mapNotNull {
+                result.documents.mapNotNull {
                     Folioresults.add(it.toObject(FoliosData::class.java)!!)
                 }
                 foliosList.postValue(Folioresults)
@@ -111,15 +102,14 @@ class ViewModelDBHelper() {
                         MainViewModel.fetchFoliosData(folio.uid)
                     }
                 }
-
             }
             .addOnFailureListener {
                 Log.d(javaClass.simpleName, "Folios Update fetch FAILED ", it)
             }
     }
 
-    fun dbDeleteFolios(user: String, folioName: String){
-        db.collection(collectionFolios).whereEqualTo("uid",user).whereEqualTo("name",folioName).get()
+    fun dbDeleteFolioAndHoldings(user: String, portNum: String){
+        db.collection(collectionFolios).whereEqualTo("uid",user).whereEqualTo("port_num",portNum).get()
             .addOnSuccessListener { result ->
                 Log.d(javaClass.simpleName, "Folios Update fetch ${result!!.documents.size}")
                 // NB: This is done on a background thread
@@ -127,6 +117,28 @@ class ViewModelDBHelper() {
                 {
                     db.collection(collectionFolios).document(result.documents[0].id).delete().addOnSuccessListener {
                         MainViewModel.fetchFoliosData(user)
+                    }
+                }
+                else
+                {
+
+                }
+            }
+            .addOnFailureListener {
+                Log.d(javaClass.simpleName, "Folios Update fetch FAILED ", it)
+            }
+
+        db.collection(collectionHoldings).whereEqualTo("uid",user).whereEqualTo("port_num",portNum).get()
+            .addOnSuccessListener { result ->
+                Log.d(javaClass.simpleName, "Folios Update fetch ${result!!.documents.size}")
+                // NB: This is done on a background thread
+                if(result!!.documents.size > 0)
+                {
+                    for(i in 0 until result!!.documents.size)
+                    {
+                        db.collection(collectionHoldings).document(result.documents[i].id).delete().addOnSuccessListener {
+                            MainViewModel.fetchHoldingsData(user,portNum)
+                        }
                     }
                 }
                 else
@@ -146,10 +158,9 @@ class ViewModelDBHelper() {
             .addOnSuccessListener { result ->
                 Log.d(javaClass.simpleName, "Favorites fetch ${result!!.documents.size}")
                 // NB: This is done on a background thread
-                val temp = result.documents.mapNotNull {
+                result.documents.mapNotNull {
                     Favoritesresults.add(it.toObject(FavoriteData::class.java)!!)
                 }
-                println("\n\n db fetch results favorites list length: " + temp.size)
                 favoritesList.postValue(Favoritesresults)
             }
             .addOnFailureListener {

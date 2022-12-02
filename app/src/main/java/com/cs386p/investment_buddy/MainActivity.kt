@@ -24,7 +24,6 @@ import com.cs386p.investment_buddy.ui.StockSearch
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 
 class MainActivity : AppCompatActivity() {
-    val api_key = "RUXI1LX1OCUM137J" // TODO: Move this, just noting this here for now
     private val viewModel: MainViewModel by viewModels()
     private lateinit var binding : ContentMainBinding
     private lateinit var UID: String
@@ -55,7 +54,6 @@ class MainActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
 
         UID = viewModel.observeUID().value.toString()
-        println("\n\n****************** MainActivity UID: " + UID)
 
         // start StockSearch activity when analyze text view is clicked
         binding.analyze.setOnClickListener {
@@ -65,14 +63,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         // start Folios activity when folios text view is clicked
-        binding.fakefolios.setOnClickListener{
+        binding.fakefolios.setOnClickListener {
             val foliosClass = Folios()
             val intent = Intent(this, foliosClass::class.java)
             this.startActivity(intent)
         }
 
         // sign the user out of firestore when the sign out button is clicked
-        binding.signOutBTN.setOnClickListener(){
+        binding.signOutBTN.setOnClickListener() {
             viewModel.signOut()
             AuthInit(viewModel, signInLauncher)
         }
@@ -90,8 +88,10 @@ class MainActivity : AppCompatActivity() {
                 activityMainBinding.root,
                 false
             )
-            val infoTextView = popupView.findViewById<TextView>(com.cs386p.investment_buddy.R.id.infoText)
-            infoTextView.text = "Analyze stocks allows you to search for NYSE stocks and view research about each stock."
+            val infoTextView =
+                popupView.findViewById<TextView>(com.cs386p.investment_buddy.R.id.infoText)
+            infoTextView.text =
+                "Analyze stocks allows you to search for NYSE stocks and view research about each stock."
 
             // create the popup window
             val width = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -117,9 +117,10 @@ class MainActivity : AppCompatActivity() {
                 activityMainBinding.root,
                 false
             )
-            val infoTextView = popupView.findViewById<TextView>(com.cs386p.investment_buddy.R.id.infoText)
-            infoTextView.text = "Fakefolios are fake stock portfolios you can manage risk-free. " +
-                    "Stocks can be purchased for a Fakefolio from a Stock Research page."
+            val infoTextView =
+                popupView.findViewById<TextView>(com.cs386p.investment_buddy.R.id.infoText)
+            infoTextView.text = "FakeFolios are fake stock portfolios you can manage risk-free. " +
+                    "Stocks can be purchased for a FakeFolio from a Stock Research page."
 
             // create the popup window
             val width = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -141,61 +142,14 @@ class MainActivity : AppCompatActivity() {
         if (UID != "Uninitialized") {
             viewModel.fetchFavoriteDataList(UID)
         }
-        viewModel.observeFavoriteDataList().observe(this){
+        viewModel.observeFavoriteDataList().observe(this) {
             val results = viewModel.observeFavoriteDataList().value
-            println("observed favorites data: " + results)
             if (results != null) {
                 for (result in results) {
-                        viewModel.finnhubQuoteRequestFavorite(result.stock_ticker, this)
+                    viewModel.finnhubQuoteRequestFavorite(result.stock_ticker, this)
                 }
             }
         }
-
-        //TODO: Delete the rest of these functions and inputs once they are placed elsewhere
-        /*viewModel.fetchHoldingsData(UID)
-
-        viewModel.observeHoldingsData().observe(this){
-            println("\n\n****************** STOCK TICKER: " + it[0].stock_ticker)
-            //findViewById<TextView>(R.id.hello).text = it[0].stock_ticker
-        }
-
-        var holding = HoldingsData(
-            uuid = FirebaseAuth.getInstance().currentUser!!.uid,
-            units = 69.0,
-            stock_ticker = "CLF",
-            port_num = 3
-        )
-
-        viewModel.updateHolding(holding)
-
-        var action = TransactionsData(
-            uuid = FirebaseAuth.getInstance().currentUser!!.uid,
-            stock_ticker = "CLF",
-            timeStamp =  Timestamp.now(),
-            unit_price = 70.25,
-            units_purchased = 69.0,
-            port_num = 2
-        )
-
-        viewModel.createTransaction(action)
-
-        var folio = FoliosData(
-            uuid = FirebaseAuth.getInstance().currentUser!!.uid,
-            port_num = 2,
-            aab = 8000.0,
-            name = "FakeFolio 00"
-        )
-
-        viewModel.updateFolios(folio)
-
-        var fav = FavoritesData(
-            uuid = FirebaseAuth.getInstance().currentUser!!.uid,
-            stock_ticker = "AMD",
-            stock_name = "Advanced Micro Devices"
-        )
-
-        viewModel.updateFavorites(fav)*/
-
     }
 
     // local list of favoriteData must be used to avoid race condition issues with posting to viewModel

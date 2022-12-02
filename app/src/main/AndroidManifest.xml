@@ -43,7 +43,7 @@
 
         <activity
             android:name=".ui.FolioDashboard"
-            android:label="FakeFolios"
+            android:label="FakeFolio Dashboard"
             android:windowSoftInputMode="adjustResize"/>
 
     </application>

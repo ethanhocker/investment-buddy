@@ -19,7 +19,6 @@ class MainViewModel : ViewModel() {
     private val finnhubAPI = FinnhubAPI.create()
     private val stockRepository = Repository(alphaVantagAPI, finnhubAPI)
     private val searchResults = MutableLiveData<MutableList<SearchedStock>?>()
-    private val alphaQuoteResults = MutableLiveData<AlphaQuote>()
     private val finnhubQuoteResults = MutableLiveData<FinnhubQuote>()
     private val favoriteQuote = MutableLiveData<FinnhubQuote>()
     private val finnhubInsiderSentimentResults = MutableLiveData<MutableList<InsiderSentiment>>()
@@ -27,10 +26,7 @@ class MainViewModel : ViewModel() {
 
     private var UID = MutableLiveData("Uninitialized")
 
-    var holdingsDataList = MutableLiveData<MutableList<HoldingsData>>()
     var favoriteDataList = MutableLiveData<MutableList<FavoriteData>>()
-
-    private var folioName = MutableLiveData<String>()
 
     fun signOut() {
         FirebaseAuth.getInstance().signOut()
@@ -65,13 +61,6 @@ class MainViewModel : ViewModel() {
         return searchResults
     }
 
-    /*fun updateDashboard() {
-    }*/
-
-    fun fetchHoldingsData(uid: String, portNum: String) {
-        dbHelp.dbFetchHoldings(uid,portNum, holdingsDataList)
-    }
-
     fun observeHoldingsData(): MutableLiveData<MutableList<HoldingsData>> {
         return holdingsDataList
     }
@@ -94,14 +83,6 @@ class MainViewModel : ViewModel() {
         dbHelp.dbUpdateFolio(folio)
     }
 
-    fun updateFolioName(name: String){
-        folioName.postValue(name)
-    }
-
-    fun observeFolioName(): String{
-        return folioName.value.toString()
-    }
-
     fun fetchFavoriteDataList(uid: String){
         dbHelp.dbFetchFavorites(uid, favoriteDataList)
     }
@@ -115,15 +96,6 @@ class MainViewModel : ViewModel() {
         dbHelp.dbUpdateFavorites(fav)
     }
 
-    fun alphaQuoteRequest(symbol: String) = viewModelScope.launch {
-        val result = stockRepository.alphaQuoteRequest(symbol)
-        alphaQuoteResults.postValue(result)
-    }
-
-    fun observeAlphaQuoteResults(): MutableLiveData<AlphaQuote>{
-        return alphaQuoteResults
-    }
-
     fun finnhubQuoteRequestFavorite(symbol: String, mainActivity: MainActivity) {
         println("launched request for single stock quote")
         viewModelScope.launch (start = CoroutineStart.ATOMIC) {
@@ -131,10 +103,6 @@ class MainViewModel : ViewModel() {
             favoriteQuote.postValue(result)
             mainActivity.addFavoriteQuote(result)
         }
-    }
-
-    fun observeQuoteRequestFavorite(): MutableLiveData<FinnhubQuote>{
-        return favoriteQuote
     }
 
     fun finnhubQuoteRequest(symbol: String) = viewModelScope.launch {
@@ -169,11 +137,17 @@ class MainViewModel : ViewModel() {
     companion object{
         var foliosDataList = MutableLiveData<MutableList<FoliosData>>()
         var favoritesDataList = MutableLiveData<MutableList<FavoriteData>>()
+        var holdingsDataList = MutableLiveData<MutableList<HoldingsData>>()
         private val dbHelp = ViewModelDBHelper()
 
-        fun deleteFolios(uid: String, folioName: String){
-            dbHelp.dbDeleteFolios(uid,folioName)
+        fun deleteFolioAndHoldings(uid: String, portNum: String){
+            dbHelp.dbDeleteFolioAndHoldings(uid,portNum)
         }
+
+        fun fetchHoldingsData(uid: String, portNum: String) {
+            dbHelp.dbFetchHoldings(uid,portNum, holdingsDataList)
+        }
+
         fun fetchFoliosData(uid: String){
             dbHelp.dbFetchFolios(uid,foliosDataList)
         }

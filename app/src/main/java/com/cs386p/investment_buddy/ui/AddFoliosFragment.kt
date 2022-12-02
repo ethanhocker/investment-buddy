@@ -46,6 +46,7 @@ class AddFoliosFragment : DialogFragment() {
                 uid = FirebaseAuth.getInstance().currentUser!!.uid,
                 port_num = ft.format(dNow),
                 aab = balance.text.toString().toDouble(),
+                starting_balance = balance.text.toString().toDouble(),
                 name = name.text.toString()
             )
             viewModel.updateFolio(folio)

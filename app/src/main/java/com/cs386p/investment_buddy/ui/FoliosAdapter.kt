@@ -13,14 +13,11 @@ import androidx.recyclerview.widget.ListAdapter
 import com.cs386p.investment_buddy.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
 
-
 class FoliosAdapter: ListAdapter<FoliosData,FoliosAdapter.VH>(FoliosDiff()) {
     class FoliosDiff : DiffUtil.ItemCallback<FoliosData>() {
         override fun areItemsTheSame(oldItem: FoliosData, newItem: FoliosData): Boolean {
             return oldItem.port_num == newItem.port_num
         }
-
-        // TODO: This can be expanded for completeness if more fields are determined to be relevant
         override fun areContentsTheSame(oldItem: FoliosData, newItem: FoliosData): Boolean {
             return oldItem.port_num == newItem.port_num
         }
@@ -50,14 +47,15 @@ class FoliosAdapter: ListAdapter<FoliosData,FoliosAdapter.VH>(FoliosDiff()) {
             val intent = Intent(holder.itemView.context, folioDashboardClass::class.java)
             intent.putExtra("folioName", binding.nameFolio.text.toString())
             intent.putExtra("folioPortNum",currentList[position].port_num)
+            intent.putExtra("folioStartingBalance",currentList[position].starting_balance.toString())
+            intent.putExtra("folioAAB", currentList[position].aab.toString())
             holder.itemView.context.startActivity(intent)
         }
 
         binding.deleteFolioBTN.setOnClickListener(){
             val folioName = binding.nameFolio.text.toString()
             Log.d("XXX Folios RV Delete Icon Clicked: ", folioName)
-            MainViewModel.deleteFolios(user, folioName)
+            MainViewModel.deleteFolioAndHoldings(user, currentList[position].port_num)
         }
     }
-
 }

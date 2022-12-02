@@ -7,10 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.ListAdapter
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.cs386p.investment_buddy.MainViewModel
 import com.cs386p.investment_buddy.R
 import com.cs386p.investment_buddy.collections.FoliosData
@@ -37,7 +35,6 @@ class AddStockFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentAddStockBinding.bind(view)
 
-        //val folios = resources.getStringArray(R.array.food)
         MainViewModel.fetchFoliosData(FirebaseAuth.getInstance().currentUser!!.uid)
 
         val adapter = ArrayAdapter(requireContext(),R.layout.foliodropdown_row, arrayListOf<String>())
@@ -47,16 +44,11 @@ class AddStockFragment : DialogFragment() {
             val foliosList = viewModel.observeFoliosData().value
             foliosList2 = foliosList!!
             if (foliosList != null) {
-                println("\n\n\n\n***************************************folios list len: " + foliosList.size)
-            }
-            if (foliosList != null) {
                 adapter.clear()
                 adapter.notifyDataSetChanged()
-                var i = 0
-                for(folio in foliosList){
-                    adapter.insert(folio.name, i)
+                for((index, folio) in foliosList.withIndex()){
+                    adapter.insert(folio.name, index)
                     adapter.notifyDataSetChanged()
-                    i++
                 }
             }
         }
@@ -89,17 +81,19 @@ class AddStockFragment : DialogFragment() {
 
             val selectedFolio = binding.fakeFolioDropDown.text.toString()
             var folioPortNumber = ""
+            var folioStartingBalance = 0.0
             var folioIndexNumber = 0
+
             for(n in foliosList2.indices)
             {
                 if(foliosList2[n].name == selectedFolio)
                 {
                     folioPortNumber = foliosList2[n].port_num
+                    folioStartingBalance = foliosList2[n].starting_balance
                     folioIndexNumber = n
                 }
             }
 
-            println(ft.format(dNow))
             if(transactionTotal <= foliosList2[folioIndexNumber].aab) {
                 var holding = HoldingsData(
                     uid = FirebaseAuth.getInstance().currentUser!!.uid,
@@ -108,7 +102,8 @@ class AddStockFragment : DialogFragment() {
                     stock_name = stockName!!,
                     inception_date = ft.format(dNow),
                     port_num = folioPortNumber,
-                    currentPrice = ""
+                    current_price = "",
+                    purchase_price = currentPrice
                     )
                 viewModel.updateHolding(holding)
 
@@ -116,7 +111,8 @@ class AddStockFragment : DialogFragment() {
                     uid = FirebaseAuth.getInstance().currentUser!!.uid,
                     name = selectedFolio,
                     port_num = folioPortNumber,
-                    aab = transactionTotal
+                    aab = transactionTotal,
+                    starting_balance = folioStartingBalance
                 )
                 viewModel.updateFolio(folio)
             }
