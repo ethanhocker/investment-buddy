@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.commitNow
 import androidx.lifecycle.MutableLiveData
 import com.cs386p.investment_buddy.MainViewModel
 import com.cs386p.investment_buddy.api.Repository
@@ -34,6 +35,7 @@ class StockResearch : AppCompatActivity() {
         // grab values from intent
         val symbol = intent.getStringExtra("symbol").toString()
         val stockName = intent.getStringExtra("stockName").toString()
+        var currentPrice = ""
         // set title stock name
         binding.stockName.text = stockName
 
@@ -46,6 +48,7 @@ class StockResearch : AppCompatActivity() {
             val quote = viewModel.observeFinnhubQuoteResults().value
             if (quote != null) {
                 binding.currentValue.text = quote.currentPrice
+                currentPrice = quote.currentPrice
             }
         }
 
@@ -57,11 +60,15 @@ class StockResearch : AppCompatActivity() {
         val fragmentManager = (this as AppCompatActivity).supportFragmentManager
         binding.addButton.setOnClickListener(){
             val addFolioPopUp = AddStockFragment()
-            addFolioPopUp.show(fragmentManager,"Purchase Stock")
 
-            /*val intent = Intent(this, AddStockFragment::class.java)
-            intent.putExtra("symbol", symbol)
-            intent.putExtra("stockName", stockName)*/
+            val args = Bundle()
+            args.putString("symbol", symbol)
+            args.putString("stockName", stockName)
+            args.putString("currentPrice",currentPrice)
+
+            addFolioPopUp.arguments = args
+
+            addFolioPopUp.show(fragmentManager,"Purchase Stock")
         }
 
         binding.favoriteButton.setOnClickListener(){
@@ -80,6 +87,7 @@ class StockResearch : AppCompatActivity() {
 
     // end activity - can add more logic here if needed
     private fun doFinish(){
+        viewModel.fetchFavoriteDataList(FirebaseAuth.getInstance().currentUser!!.uid)
         finish()
     }
 
@@ -98,7 +106,7 @@ class StockResearch : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
+        // Handle action argsbaBundler item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         val id = item.itemId
@@ -106,8 +114,9 @@ class StockResearch : AppCompatActivity() {
         return if (id == android.R.id.home) {
             // If user clicks "up", then it it as if they clicked OK.  We commit
             // changes and return to parent
-            finish()
+            doFinish()
             true
         } else super.onOptionsItemSelected(item)
     }
 }
+

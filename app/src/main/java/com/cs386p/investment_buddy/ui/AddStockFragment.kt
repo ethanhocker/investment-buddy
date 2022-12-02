@@ -25,7 +25,6 @@ class AddStockFragment : DialogFragment() {
     private val viewModel: MainViewModel by viewModels()
     private var onDismissFunction: () -> Unit = {}
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,9 +41,11 @@ class AddStockFragment : DialogFragment() {
         MainViewModel.fetchFoliosData(FirebaseAuth.getInstance().currentUser!!.uid)
 
         val adapter = ArrayAdapter(requireContext(),R.layout.foliodropdown_row, arrayListOf<String>())
+        var foliosList2: MutableList<FoliosData> = arrayListOf()
 
         viewModel.observeFoliosData().observe(this){
             val foliosList = viewModel.observeFoliosData().value
+            foliosList2 = foliosList!!
             if (foliosList != null) {
                 println("\n\n\n\n***************************************folios list len: " + foliosList.size)
             }
@@ -60,37 +61,69 @@ class AddStockFragment : DialogFragment() {
             }
         }
 
-//        var foliosList = viewModel.observeFoliosData()
-//        println("*********************** " + foliosList.value.toString())
-//        var foliosArray = arrayOf<String>()
-//
-//        for(folio in foliosList.value!!){
-//            foliosArray += folio.name
-//        }
-
-
         binding.fakeFolioDropDown.setAdapter(adapter)
 
         val confirm = binding.confirmFolioBTN
+        val args = arguments
+        val symbol = args!!.getString("symbol")
+        val stockName = args!!.getString("stockName")
+        val currentPrice = args!!.getString("currentPrice")
 
         confirm.setOnClickListener(){
             Log.d("XXX Confirm Button Clicked ", "")
             val dNow = Date()
             val ft = SimpleDateFormat("MM/dd/yyyy")
 
+            var unitsPurchased = 0.0
+
+            if(binding.radioBTN1.isChecked)
+            {
+                unitsPurchased = binding.amountET.text.toString().toDouble() / currentPrice.toString().toDouble()
+            }
+            else if(binding.radioBTN2.isChecked)
+            {
+                unitsPurchased = binding.amountET.text.toString().toDouble()
+            }
+
+            val transactionTotal = unitsPurchased * currentPrice!!.toDouble()
+
+            val selectedFolio = binding.fakeFolioDropDown.text.toString()
+            var folioPortNumber = ""
+            var folioIndexNumber = 0
+            for(n in foliosList2.indices)
+            {
+                if(foliosList2[n].name == selectedFolio)
+                {
+                    folioPortNumber = foliosList2[n].port_num
+                    folioIndexNumber = n
+                }
+            }
+
             println(ft.format(dNow))
+            if(transactionTotal <= foliosList2[folioIndexNumber].aab) {
+                var holding = HoldingsData(
+                    uid = FirebaseAuth.getInstance().currentUser!!.uid,
+                    units = unitsPurchased,
+                    stock_ticker = symbol!!,
+                    stock_name = stockName!!,
+                    inception_date = ft.format(dNow),
+                    port_num = folioPortNumber,
 
+                    )
+                viewModel.updateHolding(holding)
 
-            var holding = HoldingsData(
-                uid = FirebaseAuth.getInstance().currentUser!!.uid,
-                units = binding.amountET.text.toString().toDouble(),
-                stock_ticker = "AMD",
-                stock_name = "Advanced Micro Devices",
-                inception_date = ft.format(dNow),
-                port_num = "69", //TODO
-
-            )
-            viewModel.updateHolding(holding)
+                var folio = FoliosData(
+                    uid = FirebaseAuth.getInstance().currentUser!!.uid,
+                    name = selectedFolio,
+                    port_num = folioPortNumber,
+                    aab = transactionTotal
+                )
+                viewModel.updateFolio(folio)
+            }
+            else
+            {
+                Log.d("Transaction Amount TOO High ", transactionTotal.toString())
+            }
             dismiss()
         }
 
@@ -103,5 +136,4 @@ class AddStockFragment : DialogFragment() {
         onDismissFunction()
         super.onDismiss(dialog)
     }
-
 }

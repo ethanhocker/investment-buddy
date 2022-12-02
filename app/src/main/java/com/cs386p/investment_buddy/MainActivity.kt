@@ -22,10 +22,6 @@ import com.cs386p.investment_buddy.ui.FavoritesAdapter
 import com.cs386p.investment_buddy.ui.Folios
 import com.cs386p.investment_buddy.ui.StockSearch
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import java.lang.Thread.sleep
 
 
 class MainActivity : AppCompatActivity() {
@@ -155,8 +151,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
-
 
         //TODO: Delete the rest of these functions and inputs once they are placed elsewhere
         /*viewModel.fetchHoldingsData(UID)

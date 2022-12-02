@@ -87,9 +87,9 @@ class MainViewModel : ViewModel() {
         return foliosDataList
     }
 
-    fun updateFolios(folio: FoliosData) {
+    fun updateFolio(folio: FoliosData) {
         Log.d("Updating User Folios: ","MVM")
-        dbHelp.dbUpdateFolios(folio)
+        dbHelp.dbUpdateFolio(folio)
     }
 
     fun updateFolioName(name: String){
@@ -99,7 +99,6 @@ class MainViewModel : ViewModel() {
     fun observeFolioName(): String{
         return folioName.value.toString()
     }
-
 
     fun fetchFavoriteDataList(uid: String){
         dbHelp.dbFetchFavorites(uid, favoriteDataList)

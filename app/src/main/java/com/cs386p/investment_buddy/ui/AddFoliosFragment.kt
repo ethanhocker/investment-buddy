@@ -41,15 +41,14 @@ class AddFoliosFragment : DialogFragment() {
             Log.d("XXX Create Button Clicked ", name.text.toString() + " " + balance.text.toString())
             val dNow = Date()
             val ft = SimpleDateFormat("yyMMddhhmmssMs")
-
-
+            
             var folio = FoliosData(
                 uid = FirebaseAuth.getInstance().currentUser!!.uid,
                 port_num = ft.format(dNow),
                 aab = balance.text.toString().toDouble(),
                 name = name.text.toString()
             )
-            viewModel.updateFolios(folio)
+            viewModel.updateFolio(folio)
             dismiss()
         }
 
