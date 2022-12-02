@@ -49,40 +49,163 @@
         app:layout_constraintTop_toBottomOf="@id/stockName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/currentValue"
+        app:layout_constraintBottom_toTopOf="@id/dailyChangeLabel"
     />
     <TextView
         android:id="@+id/currentValue"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:text="$ X.XX"
+        android:text="data not available"
         android:textSize="20dp"
         android:padding="10dp"
         app:layout_constraintTop_toBottomOf="@id/stockName"
         app:layout_constraintStart_toEndOf="@id/currentValueLabel"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/dailyChangeLabel"
     />
 
     <TextView
-        android:id="@+id/weekChangeLabel"
+        android:id="@+id/dailyChangeLabel"
         android:layout_height="wrap_content"
         android:layout_width="0dp"
-        android:text="Weekly Change"
+        android:text="Daily Change:"
         android:textSize="20dp"
         android:textStyle="bold"
         android:padding="10dp"
         app:layout_constraintTop_toBottomOf="@id/currentValueLabel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/weekChange"
+        app:layout_constraintEnd_toStartOf="@id/dailyChangeValue"
+        app:layout_constraintBottom_toTopOf="@id/yearlyHighLabel"
     />
     <TextView
-        android:id="@+id/weekChange"
+        android:id="@+id/dailyChangeValue"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:text="+/- XX.XX%"
+        android:text="data not available"
         android:textSize="20dp"
         android:padding="10dp"
         app:layout_constraintTop_toBottomOf="@id/currentValueLabel"
-        app:layout_constraintStart_toEndOf="@id/weekChangeLabel"
+        app:layout_constraintStart_toEndOf="@id/dailyChangeLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/yearlyHighLabel"
+    />
+
+    <TextView
+        android:id="@+id/yearlyHighLabel"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:text="52 Week High:"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:padding="10dp"
+        app:layout_constraintTop_toBottomOf="@id/dailyChangeLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/yearlyHighValue"
+        app:layout_constraintBottom_toTopOf="@id/yearlyLowLabel"
+    />
+    <TextView
+        android:id="@+id/yearlyHighValue"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="data not available"
+        android:textSize="20dp"
+        android:padding="10dp"
+        app:layout_constraintTop_toBottomOf="@id/dailyChangeLabel"
+        app:layout_constraintStart_toEndOf="@id/yearlyHighLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/yearlyLowLabel"
+    />
+
+    <TextView
+        android:id="@+id/yearlyLowLabel"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:text="52 Week Low:"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:padding="10dp"
+        app:layout_constraintTop_toBottomOf="@id/yearlyHighLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/yearlyLowValue"
+        app:layout_constraintBottom_toTopOf="@id/netProfitMarginTTMLabel"
+    />
+    <TextView
+        android:id="@+id/yearlyLowValue"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="data not available"
+        android:textSize="20dp"
+        android:padding="10dp"
+        app:layout_constraintTop_toBottomOf="@id/yearlyHighLabel"
+        app:layout_constraintStart_toEndOf="@id/yearlyLowLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/netProfitMarginTTMLabel"
+    />
+
+    <TextView
+        android:id="@+id/netProfitMarginTTMLabel"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:text="Net Profit Margin TTM:"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:padding="10dp"
+        app:layout_constraintTop_toBottomOf="@id/yearlyLowLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/netProfitMarginTTMValue"
+    />
+    <TextView
+        android:id="@+id/netProfitMarginTTMValue"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="data not available"
+        android:textSize="20dp"
+        android:padding="10dp"
+        app:layout_constraintTop_toBottomOf="@id/yearlyLowLabel"
+        app:layout_constraintStart_toEndOf="@id/netProfitMarginTTMLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+    />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/white"
+        app:layout_constraintTop_toBottomOf="@id/netProfitMarginTTMLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+    />
+
+    <TextView
+        android:id="@+id/insiderSentimentLabel"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:text="Insider Sentiment Rating"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:padding="10dp"
+        app:layout_constraintTop_toBottomOf="@id/netProfitMarginTTMLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/insiderSentimentRating"
+    />
+    <TextView
+        android:id="@+id/insiderSentimentRating"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="no rating available"
+        android:textSize="20dp"
+        android:padding="10dp"
+        app:layout_constraintTop_toBottomOf="@id/netProfitMarginTTMLabel"
+        app:layout_constraintStart_toEndOf="@id/insiderSentimentLabel"
+        app:layout_constraintEnd_toEndOf="@id/insiderSentimentInfo"
+    />
+    <ImageView
+        android:id="@+id/insiderSentimentInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        app:srcCompat="@drawable/ic_baseline_info_24"
+        app:layout_constraintTop_toBottomOf="@id/netProfitMarginTTMLabel"
+        app:layout_constraintStart_toEndOf="@+id/insiderSentimentRating"
         app:layout_constraintEnd_toEndOf="parent"
     />
 

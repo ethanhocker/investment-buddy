@@ -1,5 +1,6 @@
 package com.cs386p.investment_buddy.api
 
+import com.google.gson.annotations.SerializedName
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -11,6 +12,13 @@ import retrofit2.http.Query
 interface FinnhubAPI {
     @GET("api/v1/quote?token=ce23nnaad3idecbgor70ce23nnaad3idecbgor7g")
     suspend fun getQuote(@Query("symbol") symbol: String) : FinnhubQuote
+    @GET("api/v1/stock/insider-sentiment?from=2022-01-01&token=ce23nnaad3idecbgor70ce23nnaad3idecbgor7g")
+    suspend fun getInsiderSentiment(@Query("symbol") symbol: String, @Query("to") date: String ) : InsiderSentimentResponse
+    @GET("api/v1/stock/metric?metric=all&token=ce23nnaad3idecbgor70ce23nnaad3idecbgor7g")
+    suspend fun getBasicFinancials(@Query("symbol") symbol: String) : BasicFinancialsResponse
+
+    data class InsiderSentimentResponse(val data: List<InsiderSentiment>){}
+    data class BasicFinancialsResponse(val metric: MetricData){}
 
     companion object {
         // Leave this as a simple, base URL.  That way, we can have many different

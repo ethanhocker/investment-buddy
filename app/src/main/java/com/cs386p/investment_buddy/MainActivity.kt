@@ -156,7 +156,6 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-
         //TODO: Delete the rest of these functions and inputs once they are placed elsewhere
         /*viewModel.fetchHoldingsData(UID)
 

@@ -13,4 +13,13 @@ class Repository(private val alphaApi: AlphaVantageAPI, private val finnhubApi: 
         result.symbol = symbol
         return result
     }
+    suspend fun finnhubInsiderSentimentRequest(symbol: String, date: String): List<InsiderSentiment> {
+        var result = finnhubApi.getInsiderSentiment(symbol, date).data
+        return result
+    }
+
+    suspend fun finnhubBasicFinancialsRequest(symbol: String) : MetricData {
+        var result = finnhubApi.getBasicFinancials(symbol).metric
+        return result
+    }
 }
