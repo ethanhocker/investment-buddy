@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cs386p.investment_buddy.MainViewModel
+import com.cs386p.investment_buddy.collections.HoldingsData
 import com.cs386p.investment_buddy.databinding.ActivityFoliodashboardBinding
 import com.cs386p.investment_buddy.databinding.ContentFoliodashboardBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -14,6 +15,8 @@ import com.google.firebase.auth.FirebaseAuth
 class FolioDashboard : AppCompatActivity() {
     private lateinit var binding: ContentFoliodashboardBinding
     private val viewModel: MainViewModel by viewModels()
+    private var localHoldingDataList = mutableListOf<HoldingsData>()
+    private var totalBalance = 0.00
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,11 +39,33 @@ class FolioDashboard : AppCompatActivity() {
         viewModel.fetchHoldingsData(FirebaseAuth.getInstance().currentUser!!.uid,folioPortNum)
 
         viewModel.observeHoldingsData().observe(this) {
-            val results = viewModel.observeHoldingsData().value
-            adapter.submitList(results)
+            val results = viewModel.observeHoldingsData().value!!
+            for (result in results){
+                viewModel.finnhubQuoteRequest(result.stock_ticker)
+            }
+
         }
+        viewModel.observeFinnhubQuoteResults().observe(this){
+            val quote = viewModel.observeFinnhubQuoteResults().value
+            val holdingDataList = viewModel.observeHoldingsData().value
+            if (holdingDataList != null && quote != null) {
+                for (holdingData in holdingDataList){
+                    if (holdingData.stock_ticker == quote.symbol){
+                        holdingData.currentPrice = quote.currentPrice
+                        localHoldingDataList.add(holdingData)
+                    }
+                }
+            }
+            adapter.submitList(localHoldingDataList)
+            adapter.notifyDataSetChanged()
 
-
+            totalBalance = 0.00
+            for(holdingData in localHoldingDataList){
+                val holdingWorth = holdingData.currentPrice.toDouble() * holdingData.units
+                totalBalance += holdingWorth
+            }
+            binding.currentValue.text = totalBalance.toString()
+        }
 
         binding.buyButtonFD.setOnClickListener(){
             val stockSearchClass = StockSearch()

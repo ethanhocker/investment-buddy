@@ -9,5 +9,6 @@ data class HoldingsData(
     var stock_name: String = "",
     var inception_date: String = "",
     var port_num: String = "",
+    var currentPrice: String= "",
     @DocumentId var firestoreID: String = ""
 )

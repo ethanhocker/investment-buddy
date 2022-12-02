@@ -85,7 +85,8 @@ class StockResearch : AppCompatActivity() {
         viewModel.observeFinnhubQuoteResults().observe(this){
             val quote = viewModel.observeFinnhubQuoteResults().value
             if (quote != null) {
-                binding.currentValue.text = "$ " + quote.currentPrice
+                currentPrice = quote.currentPrice
+                binding.currentValue.text = "$ " + currentPrice
                 var percentChange = quote.percentChange
                 // set percent change text styling based on value
                 if (percentChange != null && percentChange.toDouble() > 0){

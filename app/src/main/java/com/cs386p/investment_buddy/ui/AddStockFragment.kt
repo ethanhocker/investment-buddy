@@ -108,7 +108,7 @@ class AddStockFragment : DialogFragment() {
                     stock_name = stockName!!,
                     inception_date = ft.format(dNow),
                     port_num = folioPortNumber,
-
+                    currentPrice = ""
                     )
                 viewModel.updateHolding(holding)
 

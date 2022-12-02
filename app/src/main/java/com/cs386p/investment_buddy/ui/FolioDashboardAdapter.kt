@@ -36,7 +36,8 @@ class FolioDashboardAdapter : ListAdapter<HoldingsData, FolioDashboardAdapter.VH
         // sets the text to the textview from our itemHolder class
         binding.tickerFolioDashRV.text = currentList[position].stock_ticker
         binding.stockNameFolioDashRV.text = currentList[position].stock_name
-        binding.totalHoldingValueFolioDashRV.text = "$15,000.00"
+        val totalHoldingsVal = currentList[position].currentPrice.toDouble() * currentList[position].units
+        binding.totalHoldingValueFolioDashRV.text = totalHoldingsVal.toString()
         binding.personalChangePercentFolioDashRV.text = "+6.69"
         binding.personalChangeDateFolioDashRV.text = currentList[position].inception_date
 
