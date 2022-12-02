@@ -89,9 +89,9 @@ class MainViewModel : ViewModel() {
         return foliosDataList
     }
 
-    fun updateFolios(folio: FoliosData) {
+    fun updateFolio(folio: FoliosData) {
         Log.d("Updating User Folios: ","MVM")
-        dbHelp.dbUpdateFolios(folio)
+        dbHelp.dbUpdateFolio(folio)
     }
 
     fun updateFolioName(name: String){
@@ -168,6 +168,7 @@ class MainViewModel : ViewModel() {
 
     companion object{
         var foliosDataList = MutableLiveData<MutableList<FoliosData>>()
+        var favoritesDataList = MutableLiveData<MutableList<FavoriteData>>()
         private val dbHelp = ViewModelDBHelper()
 
         fun deleteFolios(uid: String, folioName: String){
@@ -176,5 +177,10 @@ class MainViewModel : ViewModel() {
         fun fetchFoliosData(uid: String){
             dbHelp.dbFetchFolios(uid,foliosDataList)
         }
+
+        fun fetchFavoritesData(uid: String){
+            dbHelp.dbFetchFavorites(uid,favoritesDataList)
+        }
+
     }
 }

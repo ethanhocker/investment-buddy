@@ -44,6 +44,12 @@ class ViewModelDBHelper() {
                 // NB: This is done on a background thread
                 if(result!!.documents.size > 0)
                 {
+                    val currentUnits = result.documents[0].get("units").toString().toDouble()
+                    val newUnits = holding.units
+
+                    holding.inception_date = result.documents[0].get("inception_date").toString()
+                    holding.units = currentUnits + newUnits
+
                     db.collection(collectionHoldings).document(result.documents[0].id).set(holding)
                 }
                 else
@@ -85,13 +91,17 @@ class ViewModelDBHelper() {
             }
     }
 
-    fun dbUpdateFolios(folio: FoliosData){
+    fun dbUpdateFolio(folio: FoliosData){
         db.collection(collectionFolios).whereEqualTo("uid",folio.uid).whereEqualTo("port_num",folio.port_num).get()
             .addOnSuccessListener { result ->
                 Log.d(javaClass.simpleName, "Folios Update fetch ${result!!.documents.size}")
                 // NB: This is done on a background thread
                 if(result!!.documents.size > 0)
                 {
+                    val currentAAB = result.documents[0].get("aab").toString().toDouble()
+                    val spentOnTransaction = folio.aab
+
+                    folio.aab = currentAAB - spentOnTransaction
                     db.collection(collectionFolios).document(result.documents[0].id).set(folio)
                 }
                 else
@@ -154,12 +164,16 @@ class ViewModelDBHelper() {
                 // NB: This is done on a background thread
                 if(result!!.documents.size > 0)
                 {
-                    db.collection(collectionFavorites).document(result.documents[0].id).delete()
+                    db.collection(collectionFavorites).document(result.documents[0].id).delete().addOnSuccessListener {
+                        MainViewModel.fetchFavoritesData(fav.uid)
+                    }
                 }
                 else
                 {
                     fav.firestoreID = db.collection(collectionFavorites).document().id
-                    db.collection(collectionFavorites).document(fav.firestoreID).set(fav)
+                    db.collection(collectionFavorites).document(fav.firestoreID).set(fav).addOnSuccessListener {
+                        MainViewModel.fetchFavoritesData(fav.uid)
+                    }
                 }
 
             }

@@ -22,11 +22,6 @@ import com.cs386p.investment_buddy.ui.FavoritesAdapter
 import com.cs386p.investment_buddy.ui.Folios
 import com.cs386p.investment_buddy.ui.StockSearch
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import java.lang.Thread.sleep
-
 
 class MainActivity : AppCompatActivity() {
     val api_key = "RUXI1LX1OCUM137J" // TODO: Move this, just noting this here for now
@@ -82,6 +77,7 @@ class MainActivity : AppCompatActivity() {
             AuthInit(viewModel, signInLauncher)
         }
 
+        MainViewModel.fetchFavoritesData(UID)
 
         // A long with the accompanying layout, all instance of this code and similar code are largely derived from:
         // https://stackoverflow.com/questions/5944987/how-to-create-a-popup-window-popupwindow-in-android
@@ -154,7 +150,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
 
         //TODO: Delete the rest of these functions and inputs once they are placed elsewhere
         /*viewModel.fetchHoldingsData(UID)

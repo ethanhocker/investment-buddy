@@ -11,10 +11,14 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.commitNow
+import androidx.lifecycle.MutableLiveData
 import com.cs386p.investment_buddy.MainViewModel
 import com.cs386p.investment_buddy.api.Repository
+import com.cs386p.investment_buddy.collections.FavoriteData
 import com.cs386p.investment_buddy.databinding.ActivityResearchBinding
 import com.cs386p.investment_buddy.databinding.ContentResearchBinding
+import com.google.firebase.auth.FirebaseAuth
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -34,11 +38,19 @@ class StockResearch : AppCompatActivity() {
         // add back button to default supportActionBar
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        val user = FirebaseAuth.getInstance().currentUser!!.uid
+        var favoritesList = viewModel.observeFavoriteDataList().value
+
         // grab values from intent
-        val symbol = intent.getStringExtra("symbol")
-        val stockName = intent.getStringExtra("stockName")
+        val symbol = intent.getStringExtra("symbol").toString()
+        val stockName = intent.getStringExtra("stockName").toString()
+        var currentPrice = ""
         // set title stock name
         binding.stockName.text = stockName
+
+        if (favoritesList != null) {
+            checkFavList(stockName, favoritesList)
+        }
 
         // add popup for analyzing stocks info
         binding.insiderSentimentInfo.setOnClickListener {
@@ -161,15 +173,57 @@ class StockResearch : AppCompatActivity() {
 
             viewModel.finnhubBasicFinancialsRequest(symbol)
         }
+
+        val fragmentManager = (this as AppCompatActivity).supportFragmentManager
+        binding.addButton.setOnClickListener(){
+            val addFolioPopUp = AddStockFragment()
+
+            val args = Bundle()
+            args.putString("symbol", symbol)
+            args.putString("stockName", stockName)
+            args.putString("currentPrice",currentPrice)
+
+            addFolioPopUp.arguments = args
+
+            addFolioPopUp.show(fragmentManager,"Purchase Stock")
+        }
+
+        binding.favoriteButton.setOnClickListener(){
+            var fav = FavoriteData(
+                uid = user,
+                stock_ticker = symbol,
+                stock_name = stockName,
+            )
+
+            viewModel.updateFavorites(fav)
+            //TODO figure out how to update this live
+            favoritesList = viewModel.observeFavoriteDataList().value
+            favoritesList?.let { it1 -> checkFavList(stockName, it1) }
+        }
     }
 
     // end activity - can add more logic here if needed
     private fun doFinish(){
+        viewModel.fetchFavoriteDataList(FirebaseAuth.getInstance().currentUser!!.uid)
         finish()
     }
 
+    private fun checkFavList(stockName: String, favoritesList: MutableList<FavoriteData>){
+        for(fav in favoritesList!!){
+            if(stockName == fav.stock_name)
+            {
+                binding.favoriteButton.text = "UNFAVORITE"
+                break
+            }
+            else
+            {
+                binding.favoriteButton.text = "FAVORITE"
+            }
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
+        // Handle action argsbaBundler item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         val id = item.itemId
@@ -177,8 +231,9 @@ class StockResearch : AppCompatActivity() {
         return if (id == android.R.id.home) {
             // If user clicks "up", then it it as if they clicked OK.  We commit
             // changes and return to parent
-            finish()
+            doFinish()
             true
         } else super.onOptionsItemSelected(item)
     }
 }
+
