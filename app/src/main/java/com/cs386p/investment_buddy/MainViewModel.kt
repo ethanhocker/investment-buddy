@@ -97,7 +97,6 @@ class MainViewModel : ViewModel() {
     }
 
     fun finnhubQuoteRequestFavorite(symbol: String, mainActivity: MainActivity) {
-        println("launched request for single stock quote")
         viewModelScope.launch (start = CoroutineStart.ATOMIC) {
             val result = stockRepository.finnhubQuoteRequest(symbol)
             favoriteQuote.postValue(result)
@@ -116,8 +115,6 @@ class MainViewModel : ViewModel() {
 
     fun finnhubInsiderSentimentRequest(symbol: String, date: String) = viewModelScope.launch {
         val result = stockRepository.finnhubInsiderSentimentRequest(symbol, date)
-        println("result from repository: " + result)
-        println("result from repository size: " + result.size)
         finnhubInsiderSentimentResults.postValue(result as MutableList<InsiderSentiment>?)
     }
 

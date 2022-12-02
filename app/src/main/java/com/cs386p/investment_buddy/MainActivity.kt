@@ -75,8 +75,6 @@ class MainActivity : AppCompatActivity() {
             AuthInit(viewModel, signInLauncher)
         }
 
-        MainViewModel.fetchFavoritesData(UID)
-
         // A long with the accompanying layout, all instance of this code and similar code are largely derived from:
         // https://stackoverflow.com/questions/5944987/how-to-create-a-popup-window-popupwindow-in-android
 

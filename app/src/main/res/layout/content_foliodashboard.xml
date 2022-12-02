@@ -184,11 +184,11 @@
         android:backgroundTint="#4CAF50"
         android:layout_marginBottom="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/sellButtonFD"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         />
 
-    <Button
+    <!--<Button
         android:id="@+id/sellButtonFD"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -200,6 +200,6 @@
         app:layout_constraintStart_toEndOf="@id/buyButtonFD"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        />
+        />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

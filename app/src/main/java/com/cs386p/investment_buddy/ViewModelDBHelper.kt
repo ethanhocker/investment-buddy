@@ -161,7 +161,7 @@ class ViewModelDBHelper() {
                 result.documents.mapNotNull {
                     Favoritesresults.add(it.toObject(FavoriteData::class.java)!!)
                 }
-                favoritesList.postValue(Favoritesresults)
+                favoritesList.setValue(Favoritesresults)
             }
             .addOnFailureListener {
                 Log.d(javaClass.simpleName, "Favorites fetch FAILED ", it)

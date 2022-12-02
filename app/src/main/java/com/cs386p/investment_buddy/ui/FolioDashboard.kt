@@ -67,7 +67,14 @@ class FolioDashboard : AppCompatActivity() {
                 for (holdingData in holdingDataList){
                     if (holdingData.stock_ticker == quote.symbol){
                         holdingData.current_price = quote.currentPrice
-                        localHoldingDataList.add(holdingData)
+                        val tempHolding = (localHoldingDataList.find { it.stock_ticker == holdingData.stock_ticker})
+                        if (tempHolding != null){
+                            val indexToReplace = localHoldingDataList.indexOf(tempHolding)
+                            localHoldingDataList[indexToReplace] = holdingData
+                        }
+                        else{
+                            localHoldingDataList.add(holdingData)
+                        }
                     }
                 }
             }

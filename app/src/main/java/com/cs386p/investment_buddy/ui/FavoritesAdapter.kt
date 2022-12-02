@@ -1,6 +1,8 @@
 package com.cs386p.investment_buddy.ui
 
+import android.content.Intent
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -65,6 +67,15 @@ class FavoritesAdapter: ListAdapter<FavoriteData,FavoritesAdapter.VH>(FavoritesD
         {
             binding.changePercentFav.setTextColor(Color.WHITE)
             binding.unitFav.setTextColor(Color.WHITE)
+        }
+
+        holder.itemView.setOnClickListener(){
+            Log.d("XXX Holding RV Clicked: ",binding.tickerFav.text.toString())
+            val stockResearchClass = StockResearch()
+            val intent = Intent(holder.itemView.context, stockResearchClass::class.java)
+            intent.putExtra("symbol", currentList[position].stock_ticker)
+            intent.putExtra("stockName", currentList[position].stock_name)
+            holder.itemView.context.startActivity(intent)
         }
     }
 }

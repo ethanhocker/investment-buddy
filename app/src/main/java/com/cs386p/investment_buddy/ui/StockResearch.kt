@@ -23,6 +23,7 @@ class StockResearch : AppCompatActivity() {
     private lateinit var binding : ContentResearchBinding
     private val viewModel: MainViewModel by viewModels()
     private var localFavoritesDataList = mutableListOf<FavoriteData>()
+    private var favorited = false
 
     @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,14 +45,17 @@ class StockResearch : AppCompatActivity() {
         // set title stock name
         binding.stockName.text = stockName
 
-        MainViewModel.fetchFavoritesData(FirebaseAuth.getInstance().currentUser!!.uid)
+        viewModel.fetchFavoriteDataList(FirebaseAuth.getInstance().currentUser!!.uid)
 
         viewModel.observeFavoriteDataList().observe(this) {
-            var favoritesDataList = viewModel.observeFavoriteDataList().value
-            if (favoritesDataList != null) {
-                for (favoritesData in favoritesDataList){
-                    checkFavList(stockName, favoritesDataList)
-                    localFavoritesDataList.add(favoritesData)
+            println("OBSERVED FAVORITES LIST")
+            localFavoritesDataList = viewModel.observeFavoriteDataList().value!!
+            if (localFavoritesDataList != null) {
+                for (favorite in localFavoritesDataList) {
+                    if (favorite.stock_ticker == symbol) {
+                        favorited = true
+                        binding.favoriteButton.text = "UNFAVORITE"
+                    }
                 }
             }
         }
@@ -132,7 +136,6 @@ class StockResearch : AppCompatActivity() {
                 }
 
             }
-            println("metric data: " + metricData)
         }
 
         // observe insider sentiment results and update rating on change
@@ -144,7 +147,6 @@ class StockResearch : AppCompatActivity() {
                     val recentSentiment = insiderSentiments.get(insiderSentiments.size-1)
                     // determine buy rating using mspr
                     val mspr = recentSentiment.mspr.toDouble()
-                    println("\n\nMSPR VALUE: " + mspr)
                     if (mspr > 75){
                         binding.insiderSentimentRating.text = "Strong Buy"
                         binding.insiderSentimentRating.setTextColor(Color.GREEN)
@@ -161,7 +163,6 @@ class StockResearch : AppCompatActivity() {
                         binding.insiderSentimentRating.text = "Hold"
                         binding.insiderSentimentRating.setTextColor(Color.BLUE)
                     }
-                    println("mspr: " + recentSentiment.mspr)
                 }
             }
         }
@@ -198,19 +199,22 @@ class StockResearch : AppCompatActivity() {
                 stock_name = stockName,
             )
 
-            if(binding.favoriteButton.text == "FAVORITE")
+            val buttonText = binding.favoriteButton.text
+            if(favorited == false)
             {
                 binding.favoriteButton.text = "UNFAVORITE"
+                favorited = true
             }
-            else if(binding.favoriteButton.text == "UNFAVORITE")
+            else if(favorited == true)
             {
+                favorited = false
                 binding.favoriteButton.text = "FAVORITE"
             }
 
             viewModel.updateFavorites(fav)
             //TODO figure out how to update this live
-            /*favoritesList = viewModel.observeFavoriteDataList().value
-            favoritesList?.let { it1 -> checkFavList(stockName, it1) }*/
+//            val favoritesList = viewModel.observeFavoriteDataList().value
+//            favoritesList?.let { it1 -> checkFavList(stockName, it1) }*/
 
         }
     }
