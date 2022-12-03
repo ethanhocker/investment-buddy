@@ -35,7 +35,7 @@ class MainViewModel : ViewModel() {
     fun updateUser() {
         val user = FirebaseAuth.getInstance().currentUser
         if(user != null) {
-            UID.postValue(FirebaseAuth.getInstance().currentUser!!.uid)
+            UID.setValue(FirebaseAuth.getInstance().currentUser!!.uid)
         }
     }
 

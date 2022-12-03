@@ -43,6 +43,9 @@ class MainActivity : AppCompatActivity() {
             secondLaunch = true
         }
         else {
+            if(UID == "Uninitialized"){
+                UID = viewModel.observeUID().value.toString()
+            }
             localFavoriteDataList.clear()
             viewModel.fetchFavoriteDataList(UID)
         }
@@ -150,6 +153,7 @@ class MainActivity : AppCompatActivity() {
 
         // fetch favorites data from database and update adapter when favorites are changed
         if (UID != "Uninitialized") {
+            localFavoriteDataList.clear()
             viewModel .fetchFavoriteDataList(UID)
         }
         viewModel.observeFavoriteDataList().observe(this) {
@@ -177,15 +181,23 @@ class MainActivity : AppCompatActivity() {
     fun addFavoriteQuote(quote: FinnhubQuote){
         // grab list of favorites from view model
         val favoriteDataList = viewModel.observeFavoriteDataList().value
+        var add = true
         if (favoriteDataList != null) {
-            // check if each favorite's symbol is equal tot eh current quote
+            // check if each favorite's symbol is equal to the current quote
             for (favorite in favoriteDataList){
                 if (quote != null && quote.percentChange != null) {
                     if (quote.symbol == favorite.stock_ticker){
                         // add cost and change values to favorite and add favorite to local list
                         favorite.dailyChange = quote.percentChange
                         favorite.cost = quote.currentPrice
-                        localFavoriteDataList.add(favorite)
+                        for (localFavorite in localFavoriteDataList){
+                            if (localFavorite.stock_ticker == quote.symbol){
+                                add = false
+                            }
+                        }
+                        if (add){
+                            localFavoriteDataList.add(favorite)
+                        }
                     }
                 }
             }
