@@ -3,7 +3,9 @@
 
 Name: Ethan Hocker and Michael Hallabrin
 
-Time: Ethan Hocker: 31.5 hours
+Ethan Hocker EID: ehh599
+
+Time: Ethan Hocker: 35 hours
 Time: Michael Hallabrin: 38 hours
 
 Comments:
