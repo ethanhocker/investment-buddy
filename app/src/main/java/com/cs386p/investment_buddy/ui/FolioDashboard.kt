@@ -23,6 +23,13 @@ class FolioDashboard : AppCompatActivity() {
     private var totalBalance = 0.00
     private var unRealGains = 0.00
     private var totalROR = 0.00
+    var folioPortNum = ""
+
+    // when activity is resumed refetch favorites
+    override fun onResume() {
+        super.onResume()
+        MainViewModel.fetchHoldingsData(FirebaseAuth.getInstance().currentUser!!.uid, folioPortNum)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +48,7 @@ class FolioDashboard : AppCompatActivity() {
         df.roundingMode = RoundingMode.HALF_UP
 
         val folioName = intent.getStringExtra("folioName").toString()
-        val folioPortNum = intent.getStringExtra("folioPortNum").toString()
+        folioPortNum = intent.getStringExtra("folioPortNum").toString()
         val folioStartingBalance = intent.getStringExtra("folioStartingBalance")!!.toDouble()
         val folioAAB = intent.getStringExtra("folioAAB")!!.toDouble()
 
